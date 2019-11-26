@@ -30,13 +30,31 @@
           <van-button
             type="danger"
             size="small"
-            :to="{path: '/teacher/createClass', query: {openId: this.tel}}"
-          >我是老师创建班级</van-button>
+            :to="{ path: '/teacher/createClass', query: { openId: this.tel } }"
+            >我是老师创建班级</van-button
+          >
         </div>
-        <div class="item text-right">
-          <van-button type="danger" size="small" to="/login">登录</van-button>
+        <div class="item loginBtn">
+          <div class="item text-left">
+            <van-button type="danger" size="small">查找班级</van-button>
+          </div>
+          <div class="item text-right">
+            <van-button type="danger" size="small" @click="accessGrade"
+              >进入班级</van-button
+            >
+          </div>
         </div>
       </div>
+      <van-popup v-model="accessGradeOff" @close="onClose" closeable>
+        <van-cell-group>
+          <van-field
+            v-model="gradeTel"
+            placeholder="请输入用户名"
+            :border="false"
+            bind:change="onChange"
+          />
+        </van-cell-group>
+      </van-popup>
       <!-- 菜单 -->
       <qx-menu></qx-menu>
       <van-popup v-model="popupShow" position="bottom">
@@ -160,7 +178,9 @@ export default {
         communityId: null,
         textContent: ""
       },
-      roleList: []
+      roleList: [],
+      accessGradeOff: true, //进入班级弹窗
+      gradeTel:"",
     };
   },
   computed: {
@@ -176,6 +196,14 @@ export default {
     })
   },
   methods: {
+    //点击进入班级
+    accessGrade() {
+      this.accessGradeOff = true;
+    },
+    //关闭进入班级弹窗
+    onClose() {
+      this.accessGradeOff = false;
+    },
     //加载更多班级圈
     onLoad() {
       //当组件滚动到底部时，会触发load事件
@@ -407,5 +435,8 @@ export default {
   .item {
     flex: 1;
   }
+}
+.loginBtn {
+  display: flex;
 }
 </style>

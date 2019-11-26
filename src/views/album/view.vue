@@ -22,7 +22,7 @@
           </div>
         </div>
       </van-dialog>
-      <div class="album-show" v-show="memuActive==1 && !empty">
+      <div class="album-show" v-show="memuActive == 1 && !empty">
         <van-swipe-cell
           ref="swipeCell"
           :right-width="60"
@@ -50,15 +50,25 @@
           <span slot="right" style="line-height: 100px;">删除</span>
         </van-swipe-cell>
       </div>
-      <div v-show="memuActive==2 && !empty">
+      <div v-show="memuActive == 2 && !empty">
         <div class="album-content">
-          <van-list v-model="loading" :finished="finished" :immediate-check="false" :offset="100">
-            <div v-for="(item,index) in myChildList" :key="index">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            :immediate-check="false"
+            :offset="100"
+          >
+            <div v-for="(item, index) in myChildList" :key="index">
               <div class="article-cell flex j-c-s-b a-i-c">
-                <time style="color:#8d8d8d;">{{item.createTime}}</time>
-                <span v-if="index === 0" class="on" @click="addFacePic">照片采样</span>
+                <time style="color:#8d8d8d;">{{ item.createTime }}</time>
+                <span v-if="index === 0" class="on" @click="addFacePic"
+                  >照片采样</span
+                >
               </div>
-              <div class="grid-content flex f-w-w" style="margin-left: -5px; margin-right: -5px;">
+              <div
+                class="grid-content flex f-w-w"
+                style="margin-left: -5px; margin-right: -5px;"
+              >
                 <div
                   class="album-img mb-20"
                   v-for="(pic, index) in item.photo"
@@ -75,27 +85,41 @@
         </div>
       </div>
       <div class="empty" v-if="empty">
-        <div v-if="memuActive==1">
+        <div v-if="memuActive == 1">
           <img src="@/assets/kong.png" alt />
           <p>暂无相册</p>
         </div>
-        <div v-if="memuActive==2">
+        <div v-if="memuActive == 2">
           <img src="@/assets/kong.png" alt />
-          <p>您小孩还没有采样照片</p>
-          <p style="margin-top:0">请先去添加照片</p>
+          <template v-if="localData">
+            <p>请上传小孩相册</p>
+          </template>
+
+          <template v-else>
+            <p>您小孩还没有采样照片</p>
+            <p style="margin-top:0">请先去添加照片</p>
+          </template>
+
           <van-button
             type="info"
             size="large"
             class="no-radius addPic"
             @click="addSampling"
-          >{{localData?'采样照片':'去添加'}}</van-button>
+            >{{ localData ? "采样照片" : "去添加" }}</van-button
+          >
         </div>
       </div>
     </div>
     <div class="page-ft">
       <template v-if="roleType == 2">
         <div class="fixed-bottom" style="z-index: 100;">
-          <van-button type="info" size="large" class="no-radius" @click="dialogVisible = true">新增栏目</van-button>
+          <van-button
+            type="info"
+            size="large"
+            class="no-radius"
+            @click="dialogVisible = true"
+            >新增栏目</van-button
+          >
         </div>
       </template>
       <template v-if="roleType == 3">
@@ -105,14 +129,16 @@
               size="large"
               type="danger"
               @click="classAlbum(1)"
-              :class="['no-radius',{'on':memuActive==1}]"
-            >班级相册</van-button>
+              :class="['no-radius', { on: memuActive == 1 }]"
+              >班级相册</van-button
+            >
             <van-button
               size="large"
               type="info"
-              :class="['no-radius',{'on':memuActive==2}]"
+              :class="['no-radius', { on: memuActive == 2 }]"
               @click="myChild(2)"
-            >我的小孩</van-button>
+              >我的小孩</van-button
+            >
           </div>
         </div>
       </template>
@@ -228,19 +254,18 @@ export default {
     },
 
     myChild(index) {
-      console.log(index);
       this.memuActive = index;
       if (index === 1) {
         this.albumChannelQuery(this.query);
       } else {
         this.albumChannelDetail();
+        this.checkFace();
       }
     },
 
     // 查是否有人脸识别底图20191122
     async checkFace() {
       let res = await service.checkFace(this.$store.state.user.info.studentId);
-
       if (res.errorCode === 0) {
         this.localData = true;
       } else if (res.errorCode === 404) {
@@ -253,7 +278,6 @@ export default {
 
     async albumChannelDetail() {
       let res = await service.childFace(this.$store.state.user.info.studentId);
-
       if (res.errorCode === 0) {
         this.myChildList = res.data;
         // this.myChildList = [];
@@ -312,7 +336,6 @@ export default {
   },
   mounted() {
     this.albumChannelQuery(this.query);
-    this.checkFace();
   }
 };
 </script>
