@@ -183,6 +183,6 @@ schdule.map(elem => {
 - 打包前请把不需要展示的页面关闭掉，如 src/components/Footer.vue 文件内的手环设备页面
 - 打包前请把 index.html 下的微信调试工具 VConsole 注释掉
 
-> 打包后注意事项
+> 打包后注意事项222
 
 - 打包后请把 dist 下的文件夹压缩一份放在 F:/qxiao/linchang/weixinMp 打包文件/开放版本 覆盖相关的文件，然后用 svn 提交(commit)
