@@ -55,7 +55,17 @@ export default [{
     meta: {
       keepAlive: false,
       isShare: true,
-      title: '分享',
+      title: '创建成功',
+    }
+  },
+  {
+    path: '/teacher/createClassNextStep',
+    name: 'createClassNextStep',
+    component: () => import('@/views/teacher/createClassNextStep'),
+    meta: {
+      keepAlive: false,
+      isShare: false,
+      title: '创建班级',
     }
   },
 ]

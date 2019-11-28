@@ -29,6 +29,7 @@ import {
   Loading,
   Field,
   Search,
+  Area,
 } from 'vant';
 
 Vue.use(Radio)
@@ -60,3 +61,4 @@ Vue.use(Radio)
   .use(Loading)
   .use(Field)
   .use(Search)
+  .use(Area)

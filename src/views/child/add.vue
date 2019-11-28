@@ -17,8 +17,20 @@
         <div class="cell min-h120">
           <div class="cell-hd">
             <label class="label">
-              <img :src="imageUrl" width="50" height="50" radius="50" v-if="imageUrl" />
-              <img src="@/assets/child-default@2x.png" width="50" height="50" radius="50" v-else />
+              <img
+                :src="imageUrl"
+                width="50"
+                height="50"
+                radius="50"
+                v-if="imageUrl"
+              />
+              <img
+                src="@/assets/child-default@2x.png"
+                width="50"
+                height="50"
+                radius="50"
+                v-else
+              />
             </label>
           </div>
           <div class="cell-bd text-right">
@@ -32,7 +44,12 @@
             <label class="label">姓名</label>
           </div>
           <div class="cell-bd">
-            <input class="input" placeholder="请输入姓名" maxlength="5" v-model.trim="form.studentName" />
+            <input
+              class="input"
+              placeholder="请输入姓名"
+              maxlength="5"
+              v-model.trim="form.studentName"
+            />
           </div>
         </div>
         <div class="cell cell-select cell-select-after min-h120">
@@ -45,7 +62,8 @@
                 :value="option.id"
                 v-for="(option, index) in sexList"
                 :key="index"
-              >{{ option.name }}</option>
+                >{{ option.name }}</option
+              >
             </select>
           </div>
         </div>
@@ -69,7 +87,12 @@
             <label class="label">地址</label>
           </div>
           <div class="cell-bd">
-            <input class="input" placeholder="请输入地址" maxlength="100" v-model.trim="form.address" />
+            <input
+              class="input"
+              placeholder="请输入地址"
+              maxlength="100"
+              v-model.trim="form.address"
+            />
           </div>
         </div>
 
@@ -85,7 +108,8 @@
                 :value="option.id"
                 v-for="(option, index) in relationList"
                 :key="index"
-              >{{ option.name }}</option>
+                >{{ option.name }}</option
+              >
             </select>
           </div>
         </div>
@@ -99,15 +123,22 @@
               class="input"
               type="number"
               pattern="[0-9]*"
-              placeholder="请输入手机号"
+              placeholder="请输入您的手机号码"
               v-model.trim="form.tel"
             />
           </div>
         </div>
 
-        <!-- <div class="cell min-h120 authCode">
+        <div class="cell min-h120 authCode">
           <div class="cell-hd">
-            <label class="label" @click="acquireYZM">获取验证码</label>
+            <button
+              :disabled="noMore"
+              ref="gainYZM"
+              class="label gainYZM"
+              @click="acquireYZM"
+            >
+              获取验证码
+            </button>
           </div>
           <div class="cell-bd">
             <input
@@ -117,12 +148,18 @@
               v-model.trim="form.verifyCode"
             />
           </div>
-        </div>-->
+        </div>
       </div>
     </div>
     <div class="page-ft">
       <div class="fixed-bottom" style="z-index: 100;">
-        <van-button type="info" size="large" class="no-radius" @click="handleSubmit">添加</van-button>
+        <van-button
+          type="info"
+          size="large"
+          class="no-radius"
+          @click="handleSubmit"
+          >添加</van-button
+        >
       </div>
     </div>
   </div>
@@ -155,7 +192,9 @@ export default {
         tel: "",
         relation: 1
         // verifyCode: ""
-      }
+      },
+      timer: null, //定时器
+      noMore: false
     };
   },
   computed: {
@@ -245,7 +284,25 @@ export default {
     //点击获取验证码
     acquireYZM() {
       if (isPhone(this.form.tel)) {
-        this.telVeriftCode(this.form.tel);
+        // this.telVeriftCode(this.form.tel);
+        this.noMore = true;
+        this.$nextTick(() => {
+          let newNum = "";
+          this.$refs.gainYZM.style.background = "#C2C2C2";
+          this.$refs.gainYZM.innerHTML = "60s";
+          let num = parseInt(this.$refs.gainYZM.innerHTML);
+          this.timer = setInterval(() => {
+            --num;
+            newNum = num + "s";
+            this.$refs.gainYZM.innerHTML = newNum;
+            if (parseInt(newNum) === 0) {
+              this.$refs.gainYZM.style.background = "#84CE09";
+              this.$refs.gainYZM.innerHTML = "获取验证码";
+              clearInterval(this.timer);
+              this.noMore = false;
+            }
+          }, 1000);
+        });
       } else {
         this.$toast("请正确填写手机号");
       }
@@ -274,5 +331,17 @@ export default {
     font-family: PingFang SC;
     color: rgba(149, 207, 59, 1);
   }
+}
+.gainYZM {
+  width: 160px;
+  height: 60px;
+  background: rgba(132, 206, 9, 1);
+  opacity: 1;
+  border: 0;
+  border-radius: 30px;
+  color: #fff !important;
+  text-align: center;
+  line-height: 60px;
+  font-size: 25px !important;
 }
 </style>

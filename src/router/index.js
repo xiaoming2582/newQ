@@ -49,6 +49,7 @@ import Handband from './Handband';
 import alarmClock from './alarm-clock';
 import signature from './signature';
 import specialColumn from './specialColumn';
+import searchSchool from './searchSchool';
 
 Vue.use(Router);
 
@@ -99,7 +100,8 @@ export const constantRouterMap = [
   ...Handband,
   ...alarmClock,
   ...signature,
-  ...specialColumn
+  ...specialColumn,
+  ...searchSchool
 ]
 
 

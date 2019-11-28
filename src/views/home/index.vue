@@ -25,35 +25,103 @@
         <van-icon name="arrow" size="16px"></van-icon>
       </div>
       <!-- 用户信息 -->
-      <div class="experience flex" v-if="experience == 1">
-        <div class="item text-left" v-if="part == 2">
+      <!-- <div class="experience flex" v-if="experience == 1"> -->
+      <!-- <div class="item text-left entranceGrade" v-if="part == 2"> -->
+      <div class="experience flex">
+        <div class="item text-left entranceGrade">
           <van-button
             type="danger"
             size="small"
             :to="{ path: '/teacher/createClass', query: { openId: this.tel } }"
-            >我是老师创建班级</van-button
+            >创建班级</van-button
+          >
+          <van-button type="danger" size="small" @click="entranceGrade"
+            >进入班级</van-button
           >
         </div>
-        <div class="item loginBtn">
+        <!-- <div class="item loginBtn">
           <div class="item text-left">
-            <van-button type="danger" size="small">查找班级</van-button>
+            <van-button @click="findGrade" type="danger" size="small"
+              >查找班级</van-button
+            >
           </div>
           <div class="item text-right">
             <van-button type="danger" size="small" @click="accessGrade"
               >进入班级</van-button
             >
           </div>
-        </div>
+        </div> -->
       </div>
-      <van-popup v-model="accessGradeOff" @close="onClose" closeable>
-        <van-cell-group>
-          <van-field
-            v-model="gradeTel"
-            placeholder="请输入用户名"
-            :border="false"
-            bind:change="onChange"
-          />
-        </van-cell-group>
+      <!-- 家长端-进入班级 -->
+      <van-popup
+        class="classAndGrade"
+        v-model="accessGradeOff"
+        @close="onClose"
+      >
+        <div class="telIpu">
+          <div class="close" @click="closeBtn">X</div>
+          <div class="telIpu-topIpu">
+            <van-cell-group>
+              <van-field
+                left-icon="phone-o"
+                v-model="gradeTel"
+                placeholder="请输入手机号码"
+                :border="false"
+                bind:change="onChange"
+              />
+            </van-cell-group>
+          </div>
+          <div class="telIpu-bottomIpu">
+            <van-cell-group>
+              <van-field
+                v-model="gradeYZM"
+                placeholder="请输入验证码"
+                :border="false"
+                bind:change="onChange2"
+                use-button-slot
+              >
+                <div slot="button" class="gainYZM">获取验证码</div>
+              </van-field>
+            </van-cell-group>
+          </div>
+          <div class="entranceBtn" @click="entranceBtn">进入班级</div>
+        </div>
+      </van-popup>
+
+      <!-- 老师端-进入班级 -->
+      <van-popup
+        class="classAndGrade"
+        v-model="entranceGradeOff"
+        @close="onClose2"
+      >
+        <div class="telIpu">
+          <div class="close" @click="closeBtn2">X</div>
+          <div class="telIpu-topIpu">
+            <van-cell-group>
+              <van-field
+                left-icon="phone-o"
+                v-model="teacherGradeTel"
+                placeholder="请输入手机号码"
+                :border="false"
+                bind:change="onChangeTeacher"
+              />
+            </van-cell-group>
+          </div>
+          <div class="telIpu-bottomIpu">
+            <van-cell-group>
+              <van-field
+                v-model="teacherGradeYZM"
+                placeholder="请输入验证码"
+                :border="false"
+                bind:change="onChangeTeacher2"
+                use-button-slot
+              >
+                <div slot="button" class="gainYZM">获取验证码</div>
+              </van-field>
+            </van-cell-group>
+          </div>
+          <div class="entranceBtn" @click="TeacherEntranceBtn">进入班级</div>
+        </div>
       </van-popup>
       <!-- 菜单 -->
       <qx-menu></qx-menu>
@@ -179,8 +247,13 @@ export default {
         textContent: ""
       },
       roleList: [],
-      accessGradeOff: true, //进入班级弹窗
-      gradeTel:"",
+      accessGradeOff: false, //家长端-进入班级弹窗
+      entranceGradeOff: false, //老师端-进入班级弹窗
+      gradeTel: "",
+      teacherGradeTel: "",
+      gradeYZM: "",
+      teacherGradeYZM: "",
+      haveKid: 1 //1有小孩，0没有小孩
     };
   },
   computed: {
@@ -196,6 +269,25 @@ export default {
     })
   },
   methods: {
+    entranceGrade() {
+      this.entranceGradeOff=true;
+    },
+    onChange(event) {
+      // event.detail 为当前输入的值
+      console.log(this.gradeTel);
+    },
+    onChange2(event) {
+      // event.detail 为当前输入的值
+      console.log(this.gradeYZM);
+    },
+    onChangeTeacher(event) {
+      // event.detail 为当前输入的值
+      console.log(this.teacherGradeTel);
+    },
+    onChangeTeacher2(event) {
+      // event.detail 为当前输入的值
+      console.log(this.teacherGradeYZM);
+    },
     //点击进入班级
     accessGrade() {
       this.accessGradeOff = true;
@@ -204,6 +296,44 @@ export default {
     onClose() {
       this.accessGradeOff = false;
     },
+    onClose2() {
+      this.entranceGradeOff = false;
+    },
+    closeBtn() {
+      this.accessGradeOff = false;
+    },
+    closeBtn2() {
+      this.entranceGradeOff = false;
+    },
+    findGrade() {
+      this.accessGradeOff = false;
+      if (this.haveKid) {
+        this.$router.push({
+          path: "/searchSchool"
+        });
+      } else {
+        this.$dialog
+          .alert({
+            title: "提示",
+            message: "您还没有添加小孩\n为了使您体验更多请先去添加", //改变弹出框的内容
+            showCancelButton: true, //展示取消按钮
+            confirmButtonText: "添加小孩",
+            cancelButtonColor: "#C2C2C2"
+          })
+          .then(() => {
+            //点击确认按钮后的调用
+            this.$router.push({
+              path: "/child/add"
+            });
+          })
+          .catch(() => {
+            //点击取消按钮后的调用
+            // console.log("点击了取消按钮噢");
+          });
+      }
+    },
+    entranceBtn() {},
+    TeacherEntranceBtn(){},
     //加载更多班级圈
     onLoad() {
       //当组件滚动到底部时，会触发load事件
@@ -438,5 +568,54 @@ export default {
 }
 .loginBtn {
   display: flex;
+}
+.classAndGrade {
+  width: 80vw;
+  // height: 300px;
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+}
+.telIpu {
+  width: 90%;
+}
+.van-cell {
+  background-color: #f6f6f6;
+  padding: 12px 15px;
+  border-radius: 5px;
+}
+.close {
+  text-align: right;
+  height: 60px;
+  line-height: 60px;
+  color: #666666;
+  cursor: pointer;
+}
+.telIpu-topIpu {
+  margin-bottom: 30px;
+}
+.page /deep/ .van-field__control {
+  font-size: 28px;
+}
+.gainYZM {
+  width: 200px;
+  font-size: 28px;
+  text-align: center;
+  color: #84ce09;
+  border-left: 1px solid #c2c2c2;
+  cursor: pointer;
+}
+.entranceBtn {
+  color: #84ce09;
+  font-size: 35px;
+  text-align: center;
+  padding: 50px 0 40px 0;
+}
+.aaa {
+  color: red;
+}
+.entranceGrade {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

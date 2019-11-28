@@ -4,20 +4,33 @@
       <template v-if="visibility">
         <div class="overlay" @click="visibility = false"></div>
         <div class="share-tip">
-          <img src="@/assets/share-tip.png">
+          <img src="@/assets/share-tip.png" />
           <p size-18>请点击右上角按钮邀请好友吧</p>
         </div>
       </template>
       <div class="create-success">
-        <img src="@/assets/create-success.png" alt>
+        <img src="@/assets/create-success.png" alt />
+        <div class="classNum">班级码：{{ gradeNum }}</div>
         <div class="okapi">
           <a
             href="javascript:void(0);"
             class="btn btn-large btn-primary"
             @click="visibility = true"
-          >邀请家长加入</a>
+            >邀请家长加入</a
+          >
         </div>
-        <p>分享至微信家长群可批量邀请家长加入</p>
+        <div class="okapi okapi2">
+          <a
+            href="javascript:void(0);"
+            class="btn btn-large btn-primary"
+            @click="visibility = true"
+            >邀请老师加入</a
+          >
+        </div>
+        <div class="entrance" @click="EnterTheClass">
+          <span class="gradeBtn">进入班级</span
+          ><van-icon name="arrow" color="#84ce09" />
+        </div>
       </div>
     </div>
   </div>
@@ -30,11 +43,17 @@ export default {
   data() {
     return {
       visibility: false,
-      classId: this.$route.query.classId
+      classId: this.$route.query.classId,
+      gradeNum: 2345
     };
   },
   methods: {
     jump() {
+      this.$router.replace({
+        path: "/home"
+      });
+    },
+    EnterTheClass() {
       this.$router.replace({
         path: "/home"
       });
@@ -69,7 +88,7 @@ export default {
 <style lang="less" scoped>
 .create-success {
   text-align: center;
-  padding-top: 200px;
+  padding-top: 100px;
   color: #999;
   > img {
     width: 480px;
@@ -78,12 +97,32 @@ export default {
   .okapi {
     display: flex;
     justify-content: center;
-    margin-top: 185px;
-    margin-bottom: 95px;
-    padding: 0 30px;
+    align-items: center;
+    margin-top: 150px;
+    margin-bottom: 40px;
+    // padding: 0 30px;
     > a {
-      width: 320px !important;
+      width: 80vw !important;
+      height: 90px;
+      line-height: 90px;
     }
+  }
+}
+.classNum {
+  margin-top: 50px;
+  color: #84ce09;
+  font-size: 50px;
+  font-weight: 600;
+}
+.okapi2 {
+  margin-top: 0 !important;
+}
+.entrance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .gradeBtn {
+    color: #84ce09;
   }
 }
 </style>

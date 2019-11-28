@@ -67,6 +67,7 @@ router.afterEach((to, from) => {
 
 //error 
 router.onError((error) => {
+  console.log(error)
   console.log("异步组件时发生错误");
   const pattern = /Loading chunk (\d)+ failed/g;
   const isChunkLoadFailed = error.message.match(pattern);

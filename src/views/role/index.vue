@@ -1,7 +1,9 @@
 <template>
   <div class="page">
     <div class="page-bd">
-      <div class="cells-title">基础信息</div>
+      <div class="cells-title2 titleHZM">
+         <span class="longString"></span><span class="gradeTitle">基础信息</span>
+      </div>
       <!-- 园长 -->
       <template v-if="roleType == 1">
         <div class="cells">
@@ -207,4 +209,10 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.cells-title2 {
+  color: #808080;
+  font-size: 30px;
+  margin: 20px 0;
+  padding: 0 30px;
+}
 </style>
