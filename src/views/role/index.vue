@@ -209,10 +209,10 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.cells-title2 {
-  color: #808080;
-  font-size: 30px;
-  margin: 20px 0;
-  padding: 0 30px;
-}
+// .cells-title2 {
+//   color: #808080;
+//   font-size: 30px;
+//   margin: 20px 0;
+//   padding: 0 30px;
+// }
 </style>

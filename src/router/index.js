@@ -50,6 +50,7 @@ import alarmClock from './alarm-clock';
 import signature from './signature';
 import specialColumn from './specialColumn';
 import searchSchool from './searchSchool';
+import patriarchManage from './patriarchManage';
 
 Vue.use(Router);
 
@@ -101,7 +102,8 @@ export const constantRouterMap = [
   ...alarmClock,
   ...signature,
   ...specialColumn,
-  ...searchSchool
+  ...searchSchool,
+  ...patriarchManage
 ]
 
 

@@ -13,7 +13,7 @@
         ></van-picker>
       </van-popup>
       <form action ref="form">
-        <!-- <div class="cells-title2 titleHZM">
+        <div class="cells-title2 titleHZM">
           <span class="longString"></span
           ><span class="gradeTitle">学校信息</span>
         </div>
@@ -42,10 +42,10 @@
               />
             </div>
           </div>
-        </div> -->
+        </div>
         <div class="cells-title2 titleHZM">
           <span class="longString"></span
-          ><span class="gradeTitle newGradeTitle">您的亲人邀请您一起关注孩子成长</span>
+          ><span class="gradeTitle">学生信息</span>
         </div>
         <div class="cells">
           <div class="cell">
@@ -89,7 +89,7 @@
               />
             </div>
           </div>
-          <!-- <div class="cell">
+          <div class="cell">
             <div class="cell-hd">
               <label class="label">家庭地址</label>
             </div>
@@ -100,7 +100,7 @@
                 v-model="form.familySite"
               />
             </div>
-          </div> -->
+          </div>
           <!-- 出生日期选择 -->
           <van-popup class="round" v-model="birthdayBtn" position="bottom">
             <van-datetime-picker
@@ -116,7 +116,7 @@
         <div class="cells-title2 titleHZM">
           <span class="longString"></span
           ><span class="gradeTitle">家长信息</span>
-          <!-- <span class="suggest">建议添加多个家长信息</span> -->
+          <span class="suggest">建议添加多个家长信息</span>
         </div>
         <div class="cells">
           <div class="cell">
@@ -160,7 +160,7 @@
             </div>
             <div class="cell-bd">
               <select class="select" name dir="rtl" v-model="form.relation">
-   
+                <!-- 兼容性问题修改 -->
                 <optgroup disabled hidden></optgroup>
                 <option
                   :value="option.id"
@@ -183,7 +183,53 @@
             </div>
           </div> -->
         </div>
-        <!-- <div class="cells-title ico">
+         <div class="cells" v-for="(item,index) in linkMan"  :key="index">
+          <div class="cell">
+            <div class="cell-hd">
+              <label class="label">联系方式</label>
+            </div>
+            <div class="cell-bd">
+              <input
+                type="number"
+                class="input"
+                pattern="[0-9]*"
+                placeholder="请输入您的手机号码"
+                v-model="form.tel"
+                @input="changeTel(form.tel)"
+              />
+            </div>
+          </div>
+          <div class="cell cell-select cell-select-after">
+            <div class="cell-hd">
+              <label for class="label">学生和家长关系</label>
+            </div>
+            <div class="cell-bd">
+              <select class="select" name dir="rtl" v-model="form.relation">
+                <!-- 兼容性问题修改 -->
+                <optgroup disabled hidden></optgroup>
+                <option
+                  :value="option.id"
+                  v-for="(option, index) in relationList"
+                  :key="index"
+                  >{{ option.name }}</option
+                >
+              </select>
+            </div>
+          </div>
+          <div class="cells-footer" v-if="linkMan.length > 1">
+            <div class="cell">
+              <van-button
+                native-type="button"
+                type="danger"
+                size="small"
+                @click="handleDelLinkMan(index)"
+                >删除</van-button
+              >
+            </div>
+          </div>
+        </div>
+        <div class="cells-title ico">
+          <!-- <span></span> -->
           <van-icon name="add-o" />
           <van-button
             type="info"
@@ -193,7 +239,7 @@
             @click="handleAddLinkMan"
             >添加多个家长信息</van-button
           >
-        </div> -->
+        </div>
       </form>
     </div>
     <!-- 学生名字重复 -->
@@ -251,10 +297,12 @@ export default {
         grade: "",
         schoolName: "",
         dateOfBirth: "",
+        familySite: "",
         code: "",
-        relation:1,
         tel:"",
+        relation:1
       },
+      linkMan: [{ relation: 1, tel: "" }],
       classList: [],
       studentList: [],
       repeatName: false,
@@ -274,7 +322,6 @@ export default {
         this.noMore = true;
         this.$nextTick(() => {
           let newNum = "";
-          console.log(this.$refs.gainYZM);
           this.$refs.gainYZM.style.background = "#C2C2C2";
           this.$refs.gainYZM.innerHTML = "60s";
           let num = parseInt(this.$refs.gainYZM.innerHTML);
@@ -318,10 +365,10 @@ export default {
       }
     },
     handleAddLinkMan() {
-      this.form.linkMan.push({ relation: 1, tel: "" });
+      this.linkMan.push({ relation: 1, tel: "" });
     },
     handleDelLinkMan(index) {
-      return this.form.linkMan.splice(index, 1);
+      return this.linkMan.splice(index, 1);
     },
     handleSubmit() {
       // let { studentName, classId, linkMan } = this.form;
@@ -344,7 +391,7 @@ export default {
       // this.queryStudentSame(obj);
       if (this.whetherTel) {
         this.$router.push({
-          path: "/single"
+          path: "/home"
         });
       } else {
         this.$router.push({
@@ -473,6 +520,7 @@ export default {
   width: 91vw;
   border-radius: 20px;
   margin: 0 auto;
+  margin-bottom:10px;
 }
 .suggest {
   margin-left: 250px;
@@ -495,8 +543,5 @@ export default {
   font-size: 30px;
   font-family: PingFang SC;
   color: rgba(149, 207, 59, 1);
-}
-.newGradeTitle{
-  color:#84CE09!important;
 }
 </style>

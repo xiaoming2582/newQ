@@ -3,15 +3,26 @@
     <div class="page-bd">
       <div class="dialogData" style="z-index:1000" v-if="showName">
         <div>
-          <van-circle v-model="currentRate" :rate="100" :speed="speed" :text="text" />
-          <p>{{tip}}</p>
+          <van-circle
+            v-model="currentRate"
+            :rate="100"
+            :speed="speed"
+            :text="text"
+          />
+          <p>{{ tip }}</p>
         </div>
       </div>
       <!-- dialog 图片生成分享 -->
-      <van-dialog v-model="dialogImage" close-on-click-overlay :show-confirm-button="false">
+      <van-dialog
+        v-model="dialogImage"
+        close-on-click-overlay
+        :show-confirm-button="false"
+      >
         <div class="cells">
           <img :src="shareImgUrl" />
-          <p class="text-center pt-30 pb-30 share-desctext">长按图片保存或发给朋友</p>
+          <p class="text-center pt-30 pb-30 share-desctext">
+            长按图片保存或发给朋友
+          </p>
         </div>
       </van-dialog>
       <!-- dialog 1 -->
@@ -24,13 +35,20 @@
           <div class>
             <strong>评价标准:</strong>
             <ul class="ml-20 disc font-color">
-              <li v-for="(item, index) in actionView.rules" :key="index">{{ item.ruleText }}</li>
+              <li v-for="(item, index) in actionView.rules" :key="index">
+                {{ item.ruleText }}
+              </li>
             </ul>
           </div>
         </div>
       </van-dialog>
       <!-- dialog 1 -->
-      <van-dialog v-model="dialogNote" title="添加备注" show-cancel-button :before-close="handleSubmit">
+      <van-dialog
+        v-model="dialogNote"
+        title="添加备注"
+        show-cancel-button
+        :before-close="handleSubmit"
+      >
         <div class="cells" style="padding:15px 0 15px 0;">
           <div class="cell">
             <div class="cell-bd">
@@ -46,13 +64,25 @@
       </van-dialog>
       <div class="wrap">
         <!-- 用户 -->
-        <div class="flex a-i-c home-user gradient-two" @click="handleRoleJump">
+        <div class="flex a-i-c home-user gradient-two header">
           <div class="flex a-i-c">
             <template v-if="name">
               <div class="avatar-circle flex a-i-c j-c-c">
-                <img :src="photo" width="60" height="60" radius="50" v-if="photo" />
+                <img
+                  :src="photo"
+                  width="60"
+                  height="60"
+                  radius="50"
+                  v-if="photo"
+                />
                 <!-- 如果用户没有上传头像 -->
-                <img src="@/assets/child-default@2x.png" width="60" height="60" radius="50" v-else />
+                <img
+                  src="@/assets/child-default@2x.png"
+                  width="60"
+                  height="60"
+                  radius="50"
+                  v-else
+                />
               </div>
               <div class="js-user-change">
                 <h3 class="mb-20" size-18>
@@ -64,22 +94,54 @@
             </template>
             <template v-else>
               <div class="avatar-circle">
-                <img src="@/assets/child-default@2x.png" width="60" height="60" radius="50" />
+                <img
+                  src="@/assets/child-default@2x.png"
+                  width="60"
+                  height="60"
+                  radius="50"
+                />
               </div>
               <p class="ml-20">尚未有关注孩子，点击添加。</p>
             </template>
           </div>
-          <van-icon name="arrow" size="16px"></van-icon>
+          <van-icon @click="handleRoleJump" name="arrow" size="16px"></van-icon>
+          <div class="hint" @click="entranceGrade">关联申请审核中</div>
         </div>
+        <!-- 审核详情 -->
+        <van-popup
+          class="classAndGrade"
+          v-model="entranceGradeOff"
+          @close="onClose2"
+        >
+          <div class="telIpu">
+            <div class="close" @click="closeBtn2">X</div>
+            <div class="HzmTitle">申请正在审核中</div>
+            <div class="telIpu-topIpu lis">
+              <span>小孩姓名</span><span>梁托尼</span>
+            </div>
+            <div class="telIpu-bottomIpu lis">
+              <span>第一家长号码</span><span>15486542548</span>
+            </div>
+          </div>
+        </van-popup>
         <!-- 用户 -->
         <van-tabs v-model="active" :line-height="2" @click="onClick">
           <van-tab title="在家表现">
             <div class="container">
               <!-- 蒙版 -->
-              <div class="overlay" v-if="studentId == 0" style="z-index: 500" @click="overlay"></div>
+              <div
+                class="overlay"
+                v-if="studentId == 0"
+                style="z-index: 500"
+                @click="overlay"
+              ></div>
               <div class="mod">
                 <!-- 今天的 -->
-                <router-link :to="{ path: '/actionHistory' }" tag="div" class="action-today flex">
+                <router-link
+                  :to="{ path: '/actionHistory' }"
+                  tag="div"
+                  class="action-today flex"
+                >
                   <div class="cell-bd">
                     <time size-16>{{ query.day }}</time>
                     <span>日获得Q星{{ start }}颗</span>
@@ -144,11 +206,19 @@
                 </div>
                 <div class="dhole flex">
                   <router-link to="/action">
-                    <img src="@/assets/action-icon-1@2x.png" width="20" height="20" />
+                    <img
+                      src="@/assets/action-icon-1@2x.png"
+                      width="20"
+                      height="20"
+                    />
                     <span class="ml-10">行为管理</span>
                   </router-link>
                   <router-link to="/prize">
-                    <img src="@/assets/prize-icon-1@2x.png" width="20" height="20" />
+                    <img
+                      src="@/assets/prize-icon-1@2x.png"
+                      width="20"
+                      height="20"
+                    />
                     <span class="ml-10">奖励兑换</span>
                   </router-link>
                 </div>
@@ -157,7 +227,11 @@
               <div class="mod">
                 <div class="share-image flex a-i-c j-c-s-b min-h100 mt-30">
                   <p>晒一晒我的表现</p>
-                  <van-icon name="share" size="20px" @click="shareActionImage(1)"></van-icon>
+                  <van-icon
+                    name="share"
+                    size="20px"
+                    @click="shareActionImage(1)"
+                  ></van-icon>
                 </div>
               </div>
             </div>
@@ -210,9 +284,18 @@
           <van-tab title="在校表现">
             <div class="container">
               <!-- 蒙版 -->
-              <div class="overlay" v-if="studentId == 0" style="z-index: 500" @click="overlay"></div>
+              <div
+                class="overlay"
+                v-if="studentId == 0"
+                style="z-index: 500"
+                @click="overlay"
+              ></div>
               <div class="mod">
-                <router-link :to="{ path: '/course/history' }" tag="div" class="action-today flex">
+                <router-link
+                  :to="{ path: '/course/history' }"
+                  tag="div"
+                  class="action-today flex"
+                >
                   <div class="cell-bd">
                     <time size-16>{{ query.day }}</time>
                     <span>日获得Q星{{ inSchool }}颗</span>
@@ -231,12 +314,14 @@
                       <div class="action-cell-label">
                         <div>{{ item.title }}</div>
                         <!-- 课堂时间 -->
-                        <span
-                          size-12
-                          v-show="item.startTime"
-                        >{{ item.startTime }}-{{ item.endTime }}</span>
+                        <span size-12 v-show="item.startTime"
+                          >{{ item.startTime }}-{{ item.endTime }}</span
+                        >
                       </div>
-                      <div class="action-cell-rate" @click="jumpCourseView(item)">
+                      <div
+                        class="action-cell-rate"
+                        @click="jumpCourseView(item)"
+                      >
                         <van-rate
                           v-model="item.starCount"
                           :count="5"
@@ -254,7 +339,11 @@
               <div class="mod">
                 <div class="share-image flex a-i-c j-c-s-b min-h100 mt-30">
                   <p @click="popupShow = true">晒一晒我的表现</p>
-                  <van-icon name="share" size="20px" @click="shareActionImage(2)"></van-icon>
+                  <van-icon
+                    name="share"
+                    size="20px"
+                    @click="shareActionImage(2)"
+                  ></van-icon>
                 </div>
               </div>
             </div>
@@ -399,7 +488,8 @@ export default {
       sleepUTCIndex: 0,
       utcSleep: 1,
       // deviceId: ""
-      timestamp: ""
+      timestamp: "",
+      entranceGradeOff: false
     };
   },
   computed: {
@@ -433,6 +523,15 @@ export default {
     }
   },
   methods: {
+    entranceGrade() {
+      this.entranceGradeOff = true;
+    },
+    onClose2() {
+      this.entranceGradeOff = false;
+    },
+    closeBtn2() {
+      this.entranceGradeOff = false;
+    },
     //关闭报表
     statementOnClose() {
       this.statementShow = false;
@@ -2045,5 +2144,69 @@ export default {
 }
 .statementScreenshot {
   width: 90%;
+}
+.header {
+  position: relative;
+}
+.hint {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  background: #bee67b;
+  color: #fc7878;
+  font-size: 23px;
+  padding: 10px 25px;
+  border-radius: 20px 0 0 20px;
+}
+.classAndGrade {
+  width: 80vw;
+  // height: 300px;
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+}
+.telIpu {
+  width: 90%;
+}
+.close {
+  text-align: right;
+  height: 60px;
+  line-height: 60px;
+  color: #666666;
+  cursor: pointer;
+}
+.lis {
+  background-color: #f6f6f6;
+  padding: 12px 30px;
+  border-radius: 10px;
+  height: 90px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#333333;
+}
+.telIpu-topIpu {
+  margin-bottom: 30px;
+}
+.telIpu-bottomIpu{
+   margin-bottom: 70px;
+}
+.page /deep/ .van-field__control {
+  font-size: 28px;
+}
+.gainYZM {
+  width: 200px;
+  font-size: 28px;
+  text-align: center;
+  color: #84ce09;
+  border-left: 1px solid #c2c2c2;
+  cursor: pointer;
+}
+.HzmTitle {
+  text-align: center;
+  font-size: 40px;
+  color: #fc7878;
+  font-weight: 600;
+  margin-bottom: 50px;
 }
 </style>

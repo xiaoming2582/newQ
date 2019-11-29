@@ -2,7 +2,7 @@
   <div class="page">
     <div class="page-bd">
       <!-- 角色选择 -->
-      <div class="flex a-i-c home-user gradient-two" @click="jumpRole">
+      <div class="flex a-i-c home-user gradient-two header">
         <div class="flex a-i-c">
           <div class="avatar">
             <img :src="photo" width="60" height="60" radius="50" />
@@ -12,17 +12,47 @@
             <p size-12>知识是智慧的火炬</p>
           </div>
         </div>
-        <van-icon name="arrow" size="16px"></van-icon>
+        <van-icon @click="jumpRole" name="arrow" size="16px"></van-icon>
+        <div class="hint" @click="entranceGrade">班级申请审核中</div>
       </div>
+      <!-- 审核详情 -->
+        <van-popup
+          class="classAndGrade"
+          v-model="entranceGradeOff"
+          @close="onClose2"
+        >
+          <div class="telIpu">
+            <div class="close" @click="closeBtn2">X</div>
+            <div class="HzmTitle">申请正在审核中</div>
+            <div class="telIpu-topIpu lis">
+              <span>学校名称</span><span>阳光里幼儿园</span>
+            </div>
+            <div class="telIpu-bottomIpu lis">
+              <span>班级名称</span><span>大一班</span>
+            </div>
+          </div>
+        </van-popup>
       <!-- 角色选择 -->
       <!-- 日期选择 1 -->
       <van-popup v-model="popupOne" position="bottom">
-        <calendar :zero="true" :value="valueOne" :range="true" :lunar="true" @select="selectOne"></calendar>
+        <calendar
+          :zero="true"
+          :value="valueOne"
+          :range="true"
+          :lunar="true"
+          @select="selectOne"
+        ></calendar>
       </van-popup>
       <!-- 日期选择 1 -->
       <!-- 日期选择 2 -->
       <van-popup v-model="popupTwo" position="bottom">
-        <calendar :zero="true" :value="valueTwo" :range="true" :lunar="true" @select="selectTwo"></calendar>
+        <calendar
+          :zero="true"
+          :value="valueTwo"
+          :range="true"
+          :lunar="true"
+          @select="selectTwo"
+        ></calendar>
       </van-popup>
       <!-- 日期选择 2 -->
       <!-- 班级选择菜单 -->
@@ -72,27 +102,57 @@
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="5" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="5"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="4" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="4"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="3" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="3"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="2" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="2"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="1" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="1"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
@@ -101,7 +161,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item,index) in actionTable" :key="index">
+                    <tr v-for="(item, index) in actionTable" :key="index">
                       <td>
                         <div class="block">{{ item.name }}</div>
                       </td>
@@ -109,19 +169,19 @@
                         <div class="block"></div>
                       </td>
                       <td @click="jumpDetails(item, 5)">
-                        <div class="block">{{ item.five + '人' }}</div>
+                        <div class="block">{{ item.five + "人" }}</div>
                       </td>
                       <td @click="jumpDetails(item, 4)">
-                        <div class="block">{{ item.four + '人' }}</div>
+                        <div class="block">{{ item.four + "人" }}</div>
                       </td>
                       <td @click="jumpDetails(item, 3)">
-                        <div class="block">{{ item.three + '人' }}</div>
+                        <div class="block">{{ item.three + "人" }}</div>
                       </td>
                       <td @click="jumpDetails(item, 2)">
-                        <div class="block">{{ item.two + '人' }}</div>
+                        <div class="block">{{ item.two + "人" }}</div>
                       </td>
                       <td @click="jumpDetails(item, 1)">
-                        <div class="block">{{ item.one + '人' }}</div>
+                        <div class="block">{{ item.one + "人" }}</div>
                       </td>
                       <template v-if="item.actionId == 0">
                         <td>
@@ -130,7 +190,7 @@
                       </template>
                       <template v-else>
                         <td @click="jumpDetails(item, 0)">
-                          <div class="block">{{ item.zero + '人' }}</div>
+                          <div class="block">{{ item.zero + "人" }}</div>
                         </td>
                       </template>
                     </tr>
@@ -147,11 +207,15 @@
             <div class="flex mt-30 mb-30" size-12>
               <div class="flex-1 text-center">
                 班级总人数：
-                <span style="color:#f36969">{{ actionObj.allNumber + "人" }}</span>
+                <span style="color:#f36969">{{
+                  actionObj.allNumber + "人"
+                }}</span>
               </div>
               <div class="flex-1 text-center">
                 使用行为人数：
-                <span style="color:#f36969">{{ actionObj.userNumber + "人" }}</span>
+                <span style="color:#f36969">{{
+                  actionObj.userNumber + "人"
+                }}</span>
               </div>
               <div class="flex-1 text-center">
                 未使用人数：
@@ -188,27 +252,57 @@
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="5" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="5"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="4" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="4"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="3" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="3"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="2" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="2"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
                         <div class="block">
-                          <van-rate v-model="count" :size="14" :count="1" color="#febf56" readonly></van-rate>
+                          <van-rate
+                            v-model="count"
+                            :size="14"
+                            :count="1"
+                            color="#febf56"
+                            readonly
+                          ></van-rate>
                         </div>
                       </td>
                       <td>
@@ -217,7 +311,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item,index) in lessonTable" :key="index">
+                    <tr v-for="(item, index) in lessonTable" :key="index">
                       <td>
                         <div class="block">{{ item.name }}</div>
                       </td>
@@ -225,22 +319,22 @@
                         <div class="block"></div>
                       </td>
                       <td @click="jumpDetails(item, 5)">
-                        <div class="block">{{ item.five + '人' }}</div>
+                        <div class="block">{{ item.five + "人" }}</div>
                       </td>
                       <td @click="jumpDetails(item, 4)">
-                        <div class="block">{{ item.four + '人' }}</div>
+                        <div class="block">{{ item.four + "人" }}</div>
                       </td>
                       <td @click="jumpDetails(item, 3)">
-                        <div class="block">{{ item.three + '人' }}</div>
+                        <div class="block">{{ item.three + "人" }}</div>
                       </td>
                       <td @click="jumpDetails(item, 2)">
-                        <div class="block">{{ item.two + '人' }}</div>
+                        <div class="block">{{ item.two + "人" }}</div>
                       </td>
                       <td @click="jumpDetails(item, 1)">
-                        <div class="block">{{ item.one + '人' }}</div>
+                        <div class="block">{{ item.one + "人" }}</div>
                       </td>
                       <td @click="jumpDetails(item, 0)">
-                        <div class="block">{{ item.zero + '人' }}</div>
+                        <div class="block">{{ item.zero + "人" }}</div>
                       </td>
                     </tr>
                   </tbody>
@@ -251,11 +345,15 @@
             <div class="flex mt-30 mb-30" size-12>
               <div class="flex-1 text-center">
                 班级总人数：
-                <span style="color:#f36969">{{ lessonObj.allNumber + "人" }}</span>
+                <span style="color:#f36969">{{
+                  lessonObj.allNumber + "人"
+                }}</span>
               </div>
               <div class="flex-1 text-center">
                 使用手环人数：
-                <span style="color:#f36969">{{ lessonObj.userNumber + "人" }}</span>
+                <span style="color:#f36969">{{
+                  lessonObj.userNumber + "人"
+                }}</span>
               </div>
               <div class="flex-1 text-center">
                 未使用人数：
@@ -290,6 +388,7 @@ export default {
   },
   data() {
     return {
+      entranceGradeOff:false,
       count: 5,
       popupOne: false,
       popupTwo: false,
@@ -377,6 +476,15 @@ export default {
     })
   },
   methods: {
+    entranceGrade() {
+      this.entranceGradeOff = true;
+    },
+    onClose2() {
+      this.entranceGradeOff = false;
+    },
+    closeBtn2() {
+      this.entranceGradeOff = false;
+    },
     //在家表现选择日期范围
     selectOne(begin, end) {
       //begin end (Array)
@@ -572,6 +680,19 @@ export default {
   min-width: 240px;
   border: none;
 }
+.header {
+  position: relative;
+}
+.hint {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  background: #bee67b;
+  color: #fc7878;
+  font-size: 23px;
+  padding: 10px 25px;
+  border-radius: 20px 0 0 20px;
+}
 
 #lineTd {
   &:before {
@@ -586,6 +707,57 @@ export default {
     transform: rotate(-68deg); /*这里需要自己调整，根据线的位置*/
     transform-origin: top;
   }
+}
+.classAndGrade {
+  width: 80vw;
+  // height: 300px;
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+}
+.telIpu {
+  width: 90%;
+}
+.close {
+  text-align: right;
+  height: 60px;
+  line-height: 60px;
+  color: #666666;
+  cursor: pointer;
+}
+.lis {
+  background-color: #f6f6f6;
+  padding: 12px 30px;
+  border-radius: 10px;
+  height: 90px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#333333;
+}
+.telIpu-topIpu {
+  margin-bottom: 30px;
+}
+.telIpu-bottomIpu{
+   margin-bottom: 70px;
+}
+.page /deep/ .van-field__control {
+  font-size: 28px;
+}
+.gainYZM {
+  width: 200px;
+  font-size: 28px;
+  text-align: center;
+  color: #84ce09;
+  border-left: 1px solid #c2c2c2;
+  cursor: pointer;
+}
+.HzmTitle {
+  text-align: center;
+  font-size: 40px;
+  color: #fc7878;
+  font-weight: 600;
+  margin-bottom: 50px;
 }
 </style>
 

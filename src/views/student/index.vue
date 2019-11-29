@@ -1,13 +1,13 @@
 <template>
   <div class="page">
-    <div class="page-hd">
+    <!-- <div class="page-hd">
       <div class="button-sp-area flex" size-17>
         <a href="javascript:;" id="showDatePicker" @click="popupShow = true">
           <span>{{ className }}</span>
           <van-icon name="arrow-down" size="16px"></van-icon>
         </a>
       </div>
-    </div>
+    </div> -->
     <div class="page-bd">
       <van-popup v-model="popupShow" position="bottom">
         <van-picker
@@ -33,6 +33,52 @@
           <p size-18>请点击右上角按钮邀请好友吧</p>
         </div>
       </template>
+      <div class="cells-title2 titleHZM">
+        <span class="longString"></span
+        ><span class="gradeTitle">待审核学生列表(2)</span>
+      </div>
+      <div class="cells">
+        <div
+          class="cell min-h120"
+          v-for="(student, index) in studentListed"
+          :key="index"
+        >
+          <!-- <div class="num" v-if="studentListed.length < 9">
+              0{{ index + 1 }}
+            </div>
+            <div class="num" v-else>{{ index + 1 }}</div> -->
+          <div class="cell-hd">
+            <template v-if="student.photo">
+              <img :src="student.photo" width="35" height="35" radius="50" />
+            </template>
+            <template v-else>
+              <img
+                src="@/assets/child-default@2x.png"
+                width="35"
+                height="35"
+                radius="50"
+              />
+            </template>
+          </div>
+          <div class="cell-bd pl-20">
+            <p>{{ student.studentName }}</p>
+          </div>
+          <div class="cell-ft flex">
+            <div class="pf" @click="details(student)">
+              <van-icon name="description" />
+              <p>详情</p>
+            </div>
+            <div class="pf" @click="handleWord(student)">
+              <van-icon name="completed" />
+              <p>通过</p>
+            </div>
+            <div class="pf" @click="deleteStudent(student)">
+              <van-icon name="delete" />
+              <p>删除</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- <div class="cells-title">学生家长列表({{ studentCount }})</div>
       <div class="cells">
         <div
@@ -73,17 +119,20 @@
 
       <!-- 修改学生管理列表2019106 -->
       <div v-if="studentStatus">
-        <div class="cells-title">已加入学生列表({{ studentCounted }})</div>
+        <div class="cells-title2 titleHZM">
+          <span class="longString"></span
+          ><span class="gradeTitle">已加入学生列表(4)</span>
+        </div>
         <div class="cells">
           <div
             class="cell min-h120"
             v-for="(student, index) in studentListed"
             :key="index"
           >
-            <div class="num" v-if="studentListed.length < 9">
+            <!-- <div class="num" v-if="studentListed.length < 9">
               0{{ index + 1 }}
             </div>
-            <div class="num" v-else>{{ index + 1 }}</div>
+            <div class="num" v-else>{{ index + 1 }}</div> -->
             <div class="cell-hd">
               <template v-if="student.photo">
                 <img :src="student.photo" width="35" height="35" radius="50" />
@@ -116,8 +165,53 @@
             </div>
           </div>
         </div>
-        <div class="cells-title">未加入学生列表({{ studentCounting }})</div>
+        <div class="cells-title2 titleHZM">
+          <span class="longString"></span
+          ><span class="gradeTitle">未加入学生列表(2)</span>
+        </div>
         <div class="cells">
+          <div
+            class="cell min-h120"
+            v-for="(student, index) in studentListed"
+            :key="index"
+          >
+            <!-- <div class="num" v-if="studentListed.length < 9">
+              0{{ index + 1 }}
+            </div>
+            <div class="num" v-else>{{ index + 1 }}</div> -->
+            <div class="cell-hd">
+              <template v-if="student.photo">
+                <img :src="student.photo" width="35" height="35" radius="50" />
+              </template>
+              <template v-else>
+                <img
+                  src="@/assets/child-default@2x.png"
+                  width="35"
+                  height="35"
+                  radius="50"
+                />
+              </template>
+            </div>
+            <div class="cell-bd pl-20">
+              <p>{{ student.studentName }}</p>
+            </div>
+            <div class="cell-ft flex">
+              <div class="pf" @click="handlePhone(student)">
+                <van-icon name="phone-o" />
+                <p>联系家长</p>
+              </div>
+              <div class="pf" @click="handleWord(student)">
+                <van-icon name="comment-o" />
+                <p>留言</p>
+              </div>
+              <div class="pf" @click="handleEditStudent(student)">
+                <van-icon name="edit" />
+                <p>编辑</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="cells">
           <div
             class="cell min-h120"
             v-for="(student, index) in studentListing"
@@ -157,7 +251,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -316,7 +410,7 @@ export default {
   methods: {
     //留言-取消
     leaveWordOff() {
-      this.title="";
+      this.title = "";
       this.phoneStatus = false;
     },
     onChange(event) {
@@ -372,6 +466,26 @@ export default {
           openDirection: this.openDirection
         }
       });
+    },
+    details(student) {
+      this.$router.push({
+        path: `/student/audit`,
+        query: {
+          tel: student.tel,
+          studentId: student.studentId,
+          classId: student.classId,
+          openDirection: this.openDirection
+        }
+      });
+    },
+    deleteStudent(student) {
+      this.$dialog
+        .confirm({
+          title: "提示",
+          message: "您确定要删除该学生吗？"
+        })
+        .then(() => {})
+        .catch(() => {});
     },
     handleJumpRoute() {
       this.$router.push({
@@ -532,4 +646,10 @@ export default {
 .num {
   margin-right: 20px;
 }
+// .cells-title2 {
+//   color: #808080;
+//   font-size: 30px;
+//   margin: 20px 0;
+//   padding: 0 30px;
+// }
 </style>

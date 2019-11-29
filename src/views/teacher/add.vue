@@ -2,14 +2,22 @@
   <div class="page">
     <div class="page-bd">
       <form action ref="form">
-        <div class="cells-title">基础信息</div>
+        <div class="cells-title2 titleHZM">
+          <span class="longString"></span
+          ><span class="gradeTitle">老师信息</span>
+        </div>
         <div class="cells">
           <div class="cell">
             <div class="cell-hd">
               <label class="label">姓名</label>
             </div>
             <div class="cell-bd">
-              <input class="input" placeholder="请输入老师姓名" maxlength="10" v-model="form.teacherName" />
+              <input
+                class="input"
+                placeholder="请输入老师姓名"
+                maxlength="10"
+                v-model="form.teacherName"
+              />
             </div>
           </div>
           <div class="cell cell-select cell-select-after">
@@ -20,9 +28,10 @@
               <select class="select" name dir="rtl" v-model="form.sex">
                 <option
                   :value="option.id"
-                  v-for="(option,index) in sexList"
+                  v-for="(option, index) in sexList"
                   :key="index"
-                >{{ option.name }}</option>
+                  >{{ option.name }}</option
+                >
               </select>
             </div>
           </div>
@@ -31,15 +40,17 @@
               <label class="label">手机号码</label>
             </div>
             <div class="cell-bd">
-              <input class="input" pattern="[0-9]*" placeholder="请输入手机号" v-model="form.tel" />
+              <input
+                class="input"
+                pattern="[0-9]*"
+                placeholder="请输入手机号"
+                v-model="form.tel"
+              />
             </div>
           </div>
-        </div>
-        <div class="cells-title">职务信息</div>
-        <div class="cells">
           <div class="cell cell-select cell-select-after">
             <div class="cell-hd">
-              <label class="label">职务类别</label>
+              <label class="label">职务类型</label>
             </div>
             <div class="cell-bd">
               <select class="select" name dir="rtl" v-model="form.type">
@@ -47,34 +58,26 @@
                 <optgroup disabled hidden></optgroup>
                 <option
                   :value="option.id"
-                  v-for="(option,index) in typeList"
+                  v-for="(option, index) in typeList"
                   :key="index"
-                >{{ option.name }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="cell cell-select cell-select-after">
-            <div class="cell-hd">
-              <label class="label">任教班级</label>
-            </div>
-            <div class="cell-bd">
-              <select class="select" name dir="rtl" v-model="selected" multiple size="1">
-                <!-- 兼容性问题修改 -->
-                <optgroup disabled hidden></optgroup>
-                <option
-                  :value="option.classId"
-                  v-for="(option,index) in classList"
-                  :key="index"
-                >{{ option.className }}</option>
+                  >{{ option.name }}</option
+                >
               </select>
             </div>
           </div>
         </div>
+        <!-- <div class="cells-title">职务信息</div> -->
       </form>
     </div>
     <div class="page-ft">
       <div class="fixed-bottom" style="z-index: 100;">
-        <van-button size="large" type="info" class="no-radius" @click="handleSubmit">保存</van-button>
+        <van-button
+          size="large"
+          type="info"
+          class="no-radius"
+          @click="handleSubmit"
+          >保存</van-button
+        >
       </div>
     </div>
   </div>
@@ -132,4 +135,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.cells {
+  width: 91vw;
+  margin: 0 auto;
+  border-radius: 20px;
+}
 </style>

@@ -35,7 +35,45 @@
       </template>
       <div class="cells-title2 titleHZM">
         <span class="longString"></span
-        ><span class="gradeTitle">待审核老师列表(2)</span>
+        ><span class="gradeTitle">已关注家长列表(2)</span>
+      </div>
+      <div class="cells">
+        <div
+          class="cell min-h120"
+          v-for="(student, index) in studentListed"
+          :key="index"
+          @click="message"
+        >
+          <!-- <div class="num" v-if="studentListed.length < 9">
+              0{{ index + 1 }}
+            </div>
+            <div class="num" v-else>{{ index + 1 }}</div> -->
+          <div class="cell-hd">
+            <template v-if="student.photo">
+              <img :src="student.photo" width="35" height="35" radius="50" />
+            </template>
+            <template v-else>
+              <img
+                src="@/assets/child-default@2x.png"
+                width="35"
+                height="35"
+                radius="50"
+              />
+            </template>
+          </div>
+          <div class="cell-bd cell-hd pl-20">
+            <p class="patriarchName">{{ student.studentName }}</p>
+            <p class="HzmTle">15458759457</p>
+          </div>
+
+          <div class="cell-ft flex">
+            <van-icon name="arrow" color="#CCCCCC" />
+          </div>
+        </div>
+      </div>
+      <div class="cells-title2 titleHZM">
+        <span class="longString"></span
+        ><span class="gradeTitle">申请关注小孩列表(2)</span>
       </div>
       <div class="cells">
         <div
@@ -60,8 +98,9 @@
               />
             </template>
           </div>
-          <div class="cell-bd pl-20">
+          <div class="cell-bd cell-hd pl-20">
             <p>{{ student.studentName }}</p>
+            <p class="HzmTle">15458759457</p>
           </div>
           <div class="cell-ft flex">
             <div class="pf" @click="details(student)">
@@ -78,180 +117,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <!-- <div class="cells-title">学生家长列表({{ studentCount }})</div>
-      <div class="cells">
-        <div
-          class="cell min-h120"
-          v-for="(student, index) in studentList"
-          :key="index"
-          @click="handleEditStudent(student)"
-        >
-          <div class="cell-hd">
-            <template v-if="student.photo">
-              <img :src="student.photo" width="50" height="50" radius="50" />
-            </template>
-            <template v-else>
-              <img src="@/assets/child-default@2x.png" width="50" height="50" radius="50" />
-            </template>
-          </div>
-          <div class="cell-bd pl-20">
-            <p>
-              {{ student.studentName }}
-              <span
-                size-14
-                v-if="!student.openId"
-                @click.stop="visibility = true"
-                style="color: rgb(64, 158, 255);margin-left:10px;"
-              >微信邀请</span>
-            </p>
-            <small class="and" style="color:#bdbdbd;">{{ student.tel }}</small>
-            <small class="and" style="color:#bdbdbd;">{{ student.className }}</small>
-          </div>
-          <div class="cell-ft flex">
-            <template>
-              <span size-14 v-if="student.openId" style="color:#92cd36">已加入</span>
-              <span size-14 v-else style="color:#ff87b7">未加入</span>
-            </template>
-          </div>
-        </div>
-      </div>-->
-
-      <!-- 修改学生管理列表2019106 -->
-      <div v-if="studentStatus">
-        <div class="cells-title2 titleHZM">
-          <span class="longString"></span
-          ><span class="gradeTitle">已加入老师列表(4)</span>
-        </div>
-        <div class="cells">
-          <div
-            class="cell min-h120"
-            v-for="(student, index) in studentListed"
-            :key="index"
-          >
-            <!-- <div class="num" v-if="studentListed.length < 9">
-              0{{ index + 1 }}
-            </div>
-            <div class="num" v-else>{{ index + 1 }}</div> -->
-            <div class="cell-hd">
-              <template v-if="student.photo">
-                <img :src="student.photo" width="35" height="35" radius="50" />
-              </template>
-              <template v-else>
-                <img
-                  src="@/assets/child-default@2x.png"
-                  width="35"
-                  height="35"
-                  radius="50"
-                />
-              </template>
-            </div>
-            <div class="cell-bd pl-20">
-              <p>{{ student.studentName }}</p>
-            </div>
-            <div class="cell-ft flex">
-              <div class="pf" @click="handlePhone(student)">
-                <van-icon name="phone-o" />
-                <p>联系家长</p>
-              </div>
-              <div class="pf" @click="handleWord(student)">
-                <van-icon name="comment-o" />
-                <p>留言</p>
-              </div>
-              <div class="pf" @click="handleEditStudent(student)">
-                <van-icon name="edit" />
-                <p>编辑</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="cells-title2 titleHZM">
-          <span class="longString"></span
-          ><span class="gradeTitle">未加入老师列表(2)</span>
-        </div>
-        <div class="cells">
-          <div
-            class="cell min-h120"
-            v-for="(student, index) in studentListed"
-            :key="index"
-          >
-            <!-- <div class="num" v-if="studentListed.length < 9">
-              0{{ index + 1 }}
-            </div>
-            <div class="num" v-else>{{ index + 1 }}</div> -->
-            <div class="cell-hd">
-              <template v-if="student.photo">
-                <img :src="student.photo" width="35" height="35" radius="50" />
-              </template>
-              <template v-else>
-                <img
-                  src="@/assets/child-default@2x.png"
-                  width="35"
-                  height="35"
-                  radius="50"
-                />
-              </template>
-            </div>
-            <div class="cell-bd pl-20">
-              <p>{{ student.studentName }}</p>
-            </div>
-            <div class="cell-ft flex">
-              <div class="pf" @click="handlePhone(student)">
-                <van-icon name="phone-o" />
-                <p>联系家长</p>
-              </div>
-              <div class="pf" @click="handleWord(student)">
-                <van-icon name="comment-o" />
-                <p>留言</p>
-              </div>
-              <div class="pf" @click="handleEditStudent(student)">
-                <van-icon name="edit" />
-                <p>编辑</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- <div class="cells">
-          <div
-            class="cell min-h120"
-            v-for="(student, index) in studentListing"
-            :key="index"
-          >
-            <div v-if="index < 9">0{{ index + 1 }}</div>
-            <div v-else>{{ index + 1 }}</div>
-            <div class="cell-hd">
-              <template v-if="student.photo">
-                <img :src="student.photo" width="50" height="50" radius="50" />
-              </template>
-              <template v-else>
-                <img
-                  src="@/assets/child-default@2x.png"
-                  width="50"
-                  height="50"
-                  radius="50"
-                />
-              </template>
-            </div>
-            <div class="cell-bd pl-20">
-              <p>{{ student.studentName }}</p>
-            </div>
-
-            <div class="cell-ft flex">
-              <div class="pf" @click="handlePhone(student)">
-                <van-icon name="phone-o" />
-                <p>联系家长</p>
-              </div>
-              <div class="pf" @click="handleWord(student)">
-                <van-icon name="comment-o" />
-                <p>留言</p>
-              </div>
-              <div class="pf" @click="handleEditStudent(student)">
-                <van-icon name="edit" />
-                <p>编辑</p>
-              </div>
-            </div>
-          </div>
-        </div> -->
       </div>
     </div>
 
@@ -408,6 +273,11 @@ export default {
     })
   },
   methods: {
+    message() {
+        this.$router.push({
+            path:"/patriarchManage/message",
+        })
+    },
     //留言-取消
     leaveWordOff() {
       this.title = "";
@@ -469,7 +339,7 @@ export default {
     },
     details(student) {
       this.$router.push({
-        path: `/teacher/audit`,
+        path: `/patriarchManage/audit`,
         query: {
           tel: student.tel,
           studentId: student.studentId,
@@ -482,7 +352,7 @@ export default {
       this.$dialog
         .confirm({
           title: "提示",
-          message: "您确定要删除该老师吗？"
+          message: "您确定要删除该家长吗？"
         })
         .then(() => {})
         .catch(() => {});
@@ -649,7 +519,15 @@ export default {
 // .cells-title2 {
 //   color: #808080;
 //   font-size: 30px;
-//   margin: 20px 0;
+//   margin: 30px 0;
 //   padding: 0 30px;
 // }
+.patriarchName {
+  font-weight: 600;
+}
+.HzmTle {
+  margin-left: 25px;
+  font-size: 28px;
+  color: #ccc;
+}
 </style>

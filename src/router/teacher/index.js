@@ -68,4 +68,34 @@ export default [{
       title: '创建班级',
     }
   },
+  {
+    path: '/teacher/newAdd',
+    name: 'teacherNewAdd',
+    component: () => import('@/views/teacher/newAdd'),
+    meta: {
+      keepAlive: false,
+      isShare: false,
+      title: '填写资料',
+    }
+  },
+  {
+    path: '/teacher/grade',
+    name: 'teacherGrade',
+    component: () => import('@/views/teacher/grade'),
+    meta: {
+      keepAlive: false,
+      isShare: false,
+      title: '老师管理',
+    }
+  },
+  {
+    path: '/teacher/audit',
+    name: 'teacherAudit',
+    component: () => import('@/views/teacher/audit'),
+    meta: {
+      keepAlive: false,
+      isShare: false,
+      title: '审核详情',
+    }
+  },
 ]
