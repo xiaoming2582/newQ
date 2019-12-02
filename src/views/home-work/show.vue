@@ -259,4 +259,7 @@ export default {
     box-shadow: 0px 6px 10px 0px rgba(204, 204, 204, 0.58);
   }
 }
+.page {
+  margin-bottom: 200px;
+}
 </style>

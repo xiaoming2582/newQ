@@ -13,30 +13,37 @@
         </router-link>
       </div>
     </div>
-    <div class="tab-con" v-else>
-      <div class="div1" v-show="curId === 0">
-        <router-link
-          :to="{ path: menu.url }"
-          class="langur"
-          v-for="(menu, index) in newComputedMenu1"
-          :key="index"
-        >
-          <img :src="menu.icon" width="57" height="57" />
-          <div class="text-ellipsis">{{ menu.name }}</div>
-        </router-link>
+    <v-touch
+      v-on:swipeleft="tabBtn(1)"
+      v-on:swiperight="tabBtn(0)"
+      tag="div"
+      v-else
+    >
+      <div class="tab-con">
+        <div class="div1" v-show="curId === 0">
+          <router-link
+            :to="{ path: menu.url }"
+            class="langur"
+            v-for="(menu, index) in newComputedMenu1"
+            :key="index"
+          >
+            <img :src="menu.icon" width="57" height="57" />
+            <div class="text-ellipsis">{{ menu.name }}</div>
+          </router-link>
+        </div>
+        <div class="div1" v-show="curId === 1">
+          <router-link
+            :to="{ path: menu.url }"
+            class="langur"
+            v-for="(menu, index) in newComputedMenu2"
+            :key="index"
+          >
+            <img :src="menu.icon" width="57" height="57" />
+            <div class="text-ellipsis">{{ menu.name }}</div>
+          </router-link>
+        </div>
       </div>
-      <div class="div1" v-show="curId === 1">
-        <router-link
-          :to="{ path: menu.url }"
-          class="langur"
-          v-for="(menu, index) in newComputedMenu2"
-          :key="index"
-        >
-          <img :src="menu.icon" width="57" height="57" />
-          <div class="text-ellipsis">{{ menu.name }}</div>
-        </router-link>
-      </div>
-    </div>
+    </v-touch>
 
     <div class="tab" v-if="computedMenu.length > 8">
       <span

@@ -240,7 +240,7 @@
                 <span>近一周在家表现</span>
               </div>
               <div class="statement" @click="popupOne = true">
-                <van-icon name="share" size="15px" color="#FF9933"></van-icon>
+                <van-icon name="share" size="15px" color="#fff"></van-icon>
                 <span>行为报表</span>
               </div>
               <!-- 角色选择 -->
@@ -280,6 +280,7 @@
           >
             <!-- <img src="@/assets/action-icon-1@2x.png" alt="" class="reportFormsImg "> -->
             <img :src="imgUrl" alt="" />
+            <div>长按图片保存相册或发送给朋友</div>
           </van-popup>
           <van-tab title="在校表现">
             <div class="container">
@@ -2119,15 +2120,18 @@ export default {
   position: relative;
   .statement {
     position: absolute;
-    top: 30px;
+    top: 20px;
     right: 30px;
     display: flex;
     align-items: center;
+    background: #84ce09;
+    padding: 10px 15px;
+    border-radius: 30px;
     span {
       font-size: 20px;
       font-family: PingFang SC;
       font-weight: 500;
-      color: rgba(255, 153, 51, 1);
+      color: #fff;
       margin-left: 9px;
     }
   }
@@ -2144,6 +2148,12 @@ export default {
 }
 .statementScreenshot {
   width: 90%;
+  div {
+    margin-top: 10px;
+    text-align: center;
+    color: #ccc;
+    font-size: 25px;
+  }
 }
 .header {
   position: relative;
@@ -2180,16 +2190,16 @@ export default {
   padding: 12px 30px;
   border-radius: 10px;
   height: 90px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:#333333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #333333;
 }
 .telIpu-topIpu {
   margin-bottom: 30px;
 }
-.telIpu-bottomIpu{
-   margin-bottom: 70px;
+.telIpu-bottomIpu {
+  margin-bottom: 70px;
 }
 .page /deep/ .van-field__control {
   font-size: 28px;

@@ -382,4 +382,7 @@ export default {
     }
   }
 }
+.page {
+  margin-bottom: 200px;
+}
 </style>
