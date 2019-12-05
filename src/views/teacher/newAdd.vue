@@ -96,7 +96,7 @@
           <div class="cell-bd">
             <input
               class="input text-left"
-              maxlength="6"
+              type="number"
               placeholder="请输入验证码"
               v-model="form.code"
             />
@@ -110,7 +110,7 @@
             >
               获取验证码
             </button>
-            <span v-if="hidden" style="color:#8d8d8d;">{{ second }}s</span>
+            <!-- <span v-if="hidden" style="color:#8d8d8d;">{{ second }}s</span> -->
           </div>
         </div>
       </div>
@@ -136,9 +136,8 @@ export default {
       popupShow: false,
       form: {
         schoolName: "",
-        gradeId: null,
         id: 0,
-        sex: 1,
+        sex: 2,
         className: "",
         teacherName: "",
         tel: "",
@@ -149,11 +148,33 @@ export default {
       grdeList: [],
       noMore: false,
       timer: null, //定时器
-      whetherTel: 1 //0手机不存在，1手机存在
+      whetherTel: 0 //0手机不存在，1手机存在
     };
   },
   methods: {
     submit() {
+      let { schoolName, className, teacherName, tel, sex, code } = this.form;
+      if (schoolName == "") {
+        this.$toast("请输入学校名称");
+        return false;
+      }
+      if (className == "") {
+        this.$toast("请输入班级名称");
+        return false;
+      }
+      if (teacherName == "") {
+        this.$toast("请输入您的姓名");
+        return false;
+      }
+      if (!isPhone(tel)) {
+        this.$toast("请正确填写手机号");
+        return false;
+      }
+      if (code == "") {
+        this.$toast("请填写手机验证码");
+        return false;
+      }
+
       if (this.whetherTel) {
         this.$router.push({
           path: "/home"
@@ -195,59 +216,51 @@ export default {
             }
           }, 1000);
         });
+        this.telVeriftCode(this.form.tel);
       } else {
         this.$toast("请正确填写手机号");
       }
     },
-    handleSubmit() {
-      let {
-        schoolName,
-        gradeId,
-        className,
-        teacherName,
-        tel,
-        code
-      } = this.form;
-      if (schoolName == "") {
-        this.$toast("请输入学校全称");
-        return false;
-      }
-      if (!gradeId) {
-        this.$toast("请选择年级");
-        return false;
-      }
-      if (className == "") {
-        this.$toast("请输入班级名称");
-        return false;
-      }
-      if (teacherName == "") {
-        this.$toast("请输入老师姓名");
-        return false;
-      }
-      if (code == "") {
-        this.$toast("请填写手机验证码");
-        return false;
-      }
-      if (isPhone(tel)) {
-        this.addPlaySchoolWithTemplate(this.form);
-      } else {
-        this.$toast("请正确填写手机号");
-      }
-    },
+    // handleSubmit() {
+    //   let {
+    //     schoolName,
+    //     className,
+    //     teacherName,
+    //     tel,
+    //     sex,
+    //     code
+    //   } = this.form;
+    //   if (schoolName == "") {
+    //     this.$toast("请输入学校全称");
+    //     return false;
+    //   }
+    //   if (!gradeId) {
+    //     this.$toast("请选择年级");
+    //     return false;
+    //   }
+    //   if (className == "") {
+    //     this.$toast("请输入班级名称");
+    //     return false;
+    //   }
+    //   if (teacherName == "") {
+    //     this.$toast("请输入老师姓名");
+    //     return false;
+    //   }
+    //   if (code == "") {
+    //     this.$toast("请填写手机验证码");
+    //     return false;
+    //   }
+    //   if (isPhone(tel)) {
+    //     this.addPlaySchoolWithTemplate(this.form);
+    //   } else {
+    //     this.$toast("请正确填写手机号");
+    //   }
+    // },
     //获取验证码
     async telVeriftCode(tel) {
       let res = await service.telVeriftCode({ tel, codeType: 0 });
       if (res.errorCode === 0) {
         this.$toast("验证码已经发送，请注意查收");
-        this.hidden = true;
-        this.timer = setInterval(() => {
-          if (this.second === 1) {
-            this.second = 60;
-            this.hidden = false;
-            window.clearInterval(this.timer);
-          }
-          this.second--;
-        }, 1000);
       } else if (res.errorCode === -1) {
         this.$toast(`${res.errorMsg}`);
       }

@@ -205,14 +205,39 @@ export default {
             }
           }, 1000);
         });
+        this.telVeriftCode(this.form.tel);
       } else {
         this.$toast("请正确填写手机号");
       }
     },
     nextStep() {
-      this.$router.push({
-        path: "/teacher/createClassNextStep"
-      });
+      let { teacherName, sex, tel, code } = this.form;
+      if (teacherName == "") {
+        this.$toast("请输入您的姓名");
+        return false;
+      }
+      if (sex == "") {
+        this.$toast("请选择性别");
+        return false;
+      }
+      if (code == "") {
+        this.$toast("请填写手机验证码");
+        return false;
+      }
+      if (isPhone(tel)) {
+        // this.addPlaySchoolWithTemplate(this.form);
+        this.$router.push({
+          path: "/teacher/createClassNextStep",
+          query: {
+            teacherName: this.form.teacherName,
+            sex: this.form.sex,
+            tel: this.form.tel,
+            code: this.form.code
+          }
+        });
+      } else {
+        this.$toast("请正确填写手机号");
+      }
     },
     // handleSubmit() {
     //   let {
@@ -254,15 +279,6 @@ export default {
       let res = await service.telVeriftCode({ tel, codeType: 0 });
       if (res.errorCode === 0) {
         this.$toast("验证码已经发送，请注意查收");
-        this.hidden = true;
-        this.timer = setInterval(() => {
-          if (this.second === 1) {
-            this.second = 60;
-            this.hidden = false;
-            window.clearInterval(this.timer);
-          }
-          this.second--;
-        }, 1000);
       } else if (res.errorCode === -1) {
         this.$toast(`${res.errorMsg}`);
       }

@@ -171,19 +171,8 @@
               </select>
             </div>
           </div>
-          <!-- <div class="cells-footer" v-if="form.linkMan.length > 1">
-            <div class="cell">
-              <van-button
-                native-type="button"
-                type="danger"
-                size="small"
-                @click="handleDelLinkMan(index)"
-                >删除</van-button
-              >
-            </div>
-          </div> -->
         </div>
-         <div class="cells" v-for="(item,index) in linkMan"  :key="index">
+        <div class="cells" v-for="(item, index) in linkMan" :key="index">
           <div class="cell">
             <div class="cell-hd">
               <label class="label">联系方式</label>
@@ -194,8 +183,8 @@
                 class="input"
                 pattern="[0-9]*"
                 placeholder="请输入您的手机号码"
-                v-model="form.tel"
-                @input="changeTel(form.tel)"
+                v-model="item.tel"
+                @input="changeTel(item.tel)"
               />
             </div>
           </div>
@@ -216,7 +205,10 @@
               </select>
             </div>
           </div>
-          <div class="cells-footer" v-if="linkMan.length > 1">
+          <div
+            class="cells-footer"
+            v-if="linkMan.length > 1 || linkMan.length == 1"
+          >
             <div class="cell">
               <van-button
                 native-type="button"
@@ -299,10 +291,11 @@ export default {
         dateOfBirth: "",
         familySite: "",
         code: "",
-        tel:"",
-        relation:1
+        tel: "",
+        relation: 1
       },
-      linkMan: [{ relation: 1, tel: "" }],
+      // linkMan: [{ relation: 1, tel: "" }],
+      linkMan: [],
       classList: [],
       studentList: [],
       repeatName: false,
@@ -371,23 +364,66 @@ export default {
       return this.linkMan.splice(index, 1);
     },
     handleSubmit() {
-      // let { studentName, classId, linkMan } = this.form;
-      // if (studentName == "" || !studentName.length) {
-      //   this.$toast("请输入学生姓名");
-      //   return false;
-      // }
-      // //for
-      // for (let i = 0; i < linkMan.length; i++) {
-      //   let tel = linkMan[i].tel;
-      //   if (!isPhone(tel)) {
-      //     this.$toast("请正确填写手机号");
-      //     return;
-      //   }
-      // }
-      // let obj = Object.assign({}, this.form);
-      // console.log(obj);
-      // // return false;
-      // // this.studentAdd(obj);
+      let {
+        studentName,
+        sex,
+        grade,
+        schoolName,
+        dateOfBirth,
+        familySite,
+        code,
+        tel,
+        relation
+      } = this.form;
+      if (schoolName == "") {
+        this.$toast("请输入学校名称");
+        return false;
+      }
+      if (grade == "") {
+        this.$toast("请输入班级名称");
+        return false;
+      }
+      if (studentName == "") {
+        this.$toast("请输入学生姓名");
+        return false;
+      }
+      if (sex == "") {
+        this.$toast("请选择性别");
+        return false;
+      }
+      if (dateOfBirth == "") {
+        this.$toast("请选择出生日期");
+        return false;
+      }
+      if (familySite == "") {
+        this.$toast("请输入家庭地址");
+        return false;
+      }
+      if (tel == "") {
+        this.$toast("请输入您的手机号码");
+        return false;
+      }
+      if (code == "") {
+        this.$toast("请输入验证码");
+        return false;
+      }
+       if (relation == "") {
+        this.$toast("请选择学生与家长的关系");
+        return false;
+      }
+
+      //for
+      for (let i = 0; i < this.linkMan.length; i++) {
+        let tel = this.linkMan[i].tel;
+        if (!isPhone(tel)) {
+          this.$toast("请正确填写手机号");
+          return;
+        }
+      }
+      let obj = Object.assign({}, this.form);
+      console.log(obj);
+      // return false;
+      // this.studentAdd(obj);
       // this.queryStudentSame(obj);
       if (this.whetherTel) {
         this.$router.push({
@@ -520,7 +556,7 @@ export default {
   width: 91vw;
   border-radius: 20px;
   margin: 0 auto;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
 .suggest {
   margin-left: 250px;

@@ -1,6 +1,9 @@
 <template>
   <nav class="nav">
-    <div class="tab-con" v-if="computedMenu.length < 8">
+    <div
+      class="tab-con"
+      v-if="computedMenu.length < 8 || computedMenu.length == 8"
+    >
       <div class="div1">
         <router-link
           :to="{ path: menu.url }"
@@ -95,11 +98,11 @@ export default {
           url: "/class",
           icon: require("../assets/men-icon-1@2x.png")
         },
-        {
-          name: "老师管理",
-          url: "/teacher/grade",
-          icon: require("../assets/men-icon-4@2x.png")
-        }
+        // {
+        //   name: "老师管理",
+        //   url: "/teacher/grade",
+        //   icon: require("../assets/men-icon-4@2x.png")
+        // }
       ],
       //老师
       teacherList: [
@@ -107,6 +110,11 @@ export default {
           name: "班级管理",
           url: "/student/grade",
           icon: require("../assets/men-icon-10@2x.png")
+        },
+        {
+          name: "老师管理",
+          url: "/teacher/grade",
+          icon: require("../assets/men-icon-4@2x.png")
         }
       ],
       scheduleList: [
@@ -185,7 +193,7 @@ export default {
             .concat(this.teacherList)
             .concat(this.shuttleList)
             .concat(this.feedList)
-            .concat(this.schoolList)
+            // .concat(this.schoolList)
             .concat(this.scheduleList);
           break;
         case 3:
@@ -205,7 +213,7 @@ export default {
     }
   },
   mounted() {
-    // console.log(this.computedMenu);
+    console.log(this.computedMenu);
   },
   created() {
     if (this.computedMenu.length > 8) {

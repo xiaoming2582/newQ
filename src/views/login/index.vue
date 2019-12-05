@@ -119,15 +119,6 @@ export default {
       let res = await service.telVeriftCode({ tel, codeType: 1 });
       if (res.errorCode === 0) {
         this.$toast("验证码已经发送，请注意查收");
-        this.hidden = true;
-        this.timer = setInterval(() => {
-          if (this.second === 1) {
-            this.second = 60;
-            this.hidden = false;
-            window.clearInterval(this.timer);
-          }
-          this.second--;
-        }, 1000);
       } else if (res.errorCode === -1) {
         this.$toast(`${res.errorMsg}`);
       }

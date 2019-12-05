@@ -13,39 +13,11 @@
         ></van-picker>
       </van-popup>
       <form action ref="form">
-        <!-- <div class="cells-title2 titleHZM">
-          <span class="longString"></span
-          ><span class="gradeTitle">学校信息</span>
-        </div>
-        <div class="cells">
-          <div class="cell">
-            <div class="cell-hd">
-              <label class="label">学校名称</label>
-            </div>
-            <div class="cell-bd">
-              <input
-                class="input"
-                placeholder="请输入学校名称"
-                v-model="form.schoolName"
-              />
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-hd">
-              <label class="label">班级</label>
-            </div>
-            <div class="cell-bd">
-              <input
-                class="input"
-                placeholder="请输入班级名称，如一年级（1）班"
-                v-model="form.grade"
-              />
-            </div>
-          </div>
-        </div> -->
         <div class="cells-title2 titleHZM">
           <span class="longString"></span
-          ><span class="gradeTitle newGradeTitle">您的亲人邀请您一起关注孩子成长</span>
+          ><span class="gradeTitle newGradeTitle"
+            >您的亲人邀请您一起关注孩子成长</span
+          >
         </div>
         <div class="cells">
           <div class="cell">
@@ -89,18 +61,6 @@
               />
             </div>
           </div>
-          <!-- <div class="cell">
-            <div class="cell-hd">
-              <label class="label">家庭地址</label>
-            </div>
-            <div class="cell-bd">
-              <input
-                class="input"
-                placeholder="请输入家庭地址"
-                v-model="form.familySite"
-              />
-            </div>
-          </div> -->
           <!-- 出生日期选择 -->
           <van-popup class="round" v-model="birthdayBtn" position="bottom">
             <van-datetime-picker
@@ -156,11 +116,10 @@
           </div>
           <div class="cell cell-select cell-select-after">
             <div class="cell-hd">
-              <label for class="label">学生和家长关系</label>
+              <label for class="label">relation</label>
             </div>
             <div class="cell-bd">
               <select class="select" name dir="rtl" v-model="form.relation">
-   
                 <optgroup disabled hidden></optgroup>
                 <option
                   :value="option.id"
@@ -171,33 +130,11 @@
               </select>
             </div>
           </div>
-          <!-- <div class="cells-footer" v-if="form.linkMan.length > 1">
-            <div class="cell">
-              <van-button
-                native-type="button"
-                type="danger"
-                size="small"
-                @click="handleDelLinkMan(index)"
-                >删除</van-button
-              >
-            </div>
-          </div> -->
         </div>
-        <!-- <div class="cells-title ico">
-          <van-icon name="add-o" />
-          <van-button
-            type="info"
-            size="small"
-            native-type="button"
-            class="add"
-            @click="handleAddLinkMan"
-            >添加多个家长信息</van-button
-          >
-        </div> -->
       </form>
     </div>
     <!-- 学生名字重复 -->
-    <van-dialog
+    <!-- <van-dialog
       v-model="repeatName"
       title="学生名字重复"
       show-cancel-button
@@ -209,7 +146,7 @@
       <div class="message" v-for="(item, index) in messageName" :key="index">
         {{ item }}
       </div>
-    </van-dialog>
+    </van-dialog> -->
 
     <div class="page-ft">
       <div class="fixed-bottom" style="z-index: 100;">
@@ -246,14 +183,10 @@ export default {
         openId: this.$store.state.user.info.openId,
         studentName: "",
         sex: 1,
-        // linkMan: [{ relation: 1, tel: "" }],
-        classId: null,
-        grade: "",
-        schoolName: "",
         dateOfBirth: "",
         code: "",
-        relation:1,
-        tel:"",
+        relation: 1,
+        tel: ""
       },
       classList: [],
       studentList: [],
@@ -290,8 +223,18 @@ export default {
             }
           }, 1000);
         });
+        this.telVeriftCode(this.form.tel)
       } else {
         this.$toast("请正确填写手机号");
+      }
+    },
+    //获取验证码
+    async telVeriftCode(tel) {
+      let res = await service.telVeriftCode({ tel, codeType: 1 });
+      if (res.errorCode === 0) {
+        this.$toast("验证码已经发送，请注意查收");
+      } else if (res.errorCode === -1) {
+        this.$toast(`${res.errorMsg}`);
       }
     },
     handleConfirm(value) {
@@ -324,19 +267,31 @@ export default {
       return this.form.linkMan.splice(index, 1);
     },
     handleSubmit() {
-      // let { studentName, classId, linkMan } = this.form;
-      // if (studentName == "" || !studentName.length) {
-      //   this.$toast("请输入学生姓名");
-      //   return false;
-      // }
-      // //for
-      // for (let i = 0; i < linkMan.length; i++) {
-      //   let tel = linkMan[i].tel;
-      //   if (!isPhone(tel)) {
-      //     this.$toast("请正确填写手机号");
-      //     return;
-      //   }
-      // }
+      let { studentName, sex, dateOfBirth,code,relation,tel } = this.form;
+      if (studentName == "") {
+        this.$toast("请输入学生姓名");
+        return false;
+      }
+       if (sex == "") {
+        this.$toast("请选择性别");
+        return false;
+      }
+       if (dateOfBirth == "") {
+        this.$toast("请选择出生日期");
+        return false;
+      }
+       if (tel == "") {
+        this.$toast("请输入您的手机号码");
+        return false;
+      }
+       if (code == "") {
+        this.$toast("请输入验证码");
+        return false;
+      } if (relation == "") {
+        this.$toast("请选择学生与家长的关系");
+        return false;
+      }
+
       // let obj = Object.assign({}, this.form);
       // console.log(obj);
       // // return false;
@@ -496,7 +451,7 @@ export default {
   font-family: PingFang SC;
   color: rgba(149, 207, 59, 1);
 }
-.newGradeTitle{
-  color:#84CE09!important;
+.newGradeTitle {
+  color: #84ce09 !important;
 }
 </style>

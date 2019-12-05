@@ -28,7 +28,7 @@
       <!-- <div class="experience flex" v-if="experience == 1"> -->
       <!-- <div class="item text-left entranceGrade" v-if="part == 2"> -->
       <div class="experience flex">
-        <div class="item text-left entranceGrade">
+        <!-- <div class="item text-left entranceGrade">
           <van-button
             type="danger"
             size="small"
@@ -38,8 +38,8 @@
           <van-button type="danger" size="small" @click="entranceGrade"
             >进入班级</van-button
           >
-        </div>
-        <!-- <div class="item loginBtn">
+        </div> -->
+        <div class="item loginBtn">
           <div class="item text-left">
             <van-button @click="findGrade" type="danger" size="small"
               >查找班级</van-button
@@ -50,7 +50,7 @@
               >进入班级</van-button
             >
           </div>
-        </div> -->
+        </div>
       </div>
       <!-- 家长端-进入班级 -->
       <van-popup
@@ -63,10 +63,12 @@
           <div class="telIpu-topIpu">
             <van-cell-group>
               <van-field
+                type="number"
                 left-icon="phone-o"
                 v-model="gradeTel"
                 placeholder="请输入手机号码"
                 :border="false"
+                maxlength="11"
                 bind:change="onChange"
               />
             </van-cell-group>
@@ -79,8 +81,16 @@
                 :border="false"
                 bind:change="onChange2"
                 use-button-slot
+                maxlength="6"
+                type="number"
               >
-                <div slot="button" class="gainYZM">获取验证码</div>
+                <div
+                  slot="button"
+                  class="gainYZM"
+                  @click="studentGainAuthCode()"
+                >
+                  获取验证码
+                </div>
               </van-field>
             </van-cell-group>
           </div>
@@ -99,7 +109,9 @@
           <div class="telIpu-topIpu">
             <van-cell-group>
               <van-field
+                type="number"
                 left-icon="phone-o"
+                maxlength="11"
                 v-model="teacherGradeTel"
                 placeholder="请输入手机号码"
                 :border="false"
@@ -115,8 +127,16 @@
                 :border="false"
                 bind:change="onChangeTeacher2"
                 use-button-slot
+                maxlength="6"
+                type="number"
               >
-                <div slot="button" class="gainYZM">获取验证码</div>
+                <div
+                  slot="button"
+                  class="gainYZM"
+                  @click="teacherGainAuthCode()"
+                >
+                  获取验证码
+                </div>
               </van-field>
             </van-cell-group>
           </div>
@@ -205,6 +225,7 @@
 </template>
 <script>
 import Cookies from "js-cookie";
+import { isPhone } from "@/utils/validator";
 import service from "@/api";
 import wxapi from "@/config/wxapi";
 import qxMenu from "@/components/Menu";
@@ -253,7 +274,7 @@ export default {
       teacherGradeTel: "",
       gradeYZM: "",
       teacherGradeYZM: "",
-      haveKid: 1 //1有小孩，0没有小孩
+      haveKid: 0//1有小孩，0没有小孩
     };
   },
   computed: {
@@ -269,8 +290,33 @@ export default {
     })
   },
   methods: {
+    //老师端-点击获取验证码
+    teacherGainAuthCode() {
+      if (isPhone(this.teacherGradeTel)) {
+        this.telVeriftCode(this.teacherGradeTel);
+      } else {
+        this.$toast("请正确填写手机号");
+      }
+    },
+    //家长端-点击获取验证码
+    studentGainAuthCode() {
+      if (isPhone(this.gradeTel)) {
+        this.telVeriftCode(this.gradeTel);
+      } else {
+        this.$toast("请正确填写手机号");
+      }
+    },
+    //获取验证码
+    async telVeriftCode(tel) {
+      let res = await service.telVeriftCode({ tel, codeType: 1 });
+      if (res.errorCode === 0) {
+        this.$toast("验证码已经发送，请注意查收");
+      } else if (res.errorCode === -1) {
+        this.$toast(`${res.errorMsg}`);
+      }
+    },
     entranceGrade() {
-      this.entranceGradeOff=true;
+      this.entranceGradeOff = true;
     },
     onChange(event) {
       // event.detail 为当前输入的值
@@ -288,11 +334,11 @@ export default {
       // event.detail 为当前输入的值
       console.log(this.teacherGradeYZM);
     },
-    //点击进入班级
+    //家长端-点击进入班级
     accessGrade() {
       this.accessGradeOff = true;
     },
-    //关闭进入班级弹窗
+    //家长端-关闭进入班级弹窗
     onClose() {
       this.accessGradeOff = false;
     },
@@ -332,8 +378,122 @@ export default {
           });
       }
     },
-    entranceBtn() {},
-    TeacherEntranceBtn(){},
+    entranceBtn() {
+      let form = {
+        tel: this.gradeTel,
+        verifyCode: this.gradeYZM,
+        openId: this.form.openId,
+        studentId: this.form.studentId
+      };
+      if (this.gradeTel === "") {
+        this.$toast("请填写手机号");
+        return false;
+      }
+      if (this.gradeYZM === "") {
+        this.$toast("请填写手机验证码");
+        return false;
+      }
+      if (isPhone(this.gradeTel)) {
+        this.userTeleLogin(form);
+      } else {
+        this.$toast("请正确填写手机号");
+      }
+    },
+    //老师端-进入班级
+    TeacherEntranceBtn() {
+      let form = {
+        tel: this.teacherGradeTel,
+        verifyCode: this.teacherGradeYZM,
+        openId: this.form.openId,
+        studentId: this.form.studentId
+      };
+      if (this.teacherGradeTel === "") {
+        this.$toast("请填写手机号");
+        return false;
+      }
+      if (this.teacherGradeYZM === "") {
+        this.$toast("请填写手机验证码");
+        return false;
+      }
+      if (isPhone(this.teacherGradeTel)) {
+        this.userTeleLogin(form);
+      } else {
+        this.$toast("请正确填写手机号");
+      }
+    },
+    //用户登录
+    async userTeleLogin(params = {}) {
+      let res = await service.userTeleLogin(params);
+      if (res.errorCode === 0) {
+        let { roleType, name } = res.data;
+        //定时器清除
+        // this.second = 60;
+        // this.hidden = false;
+        // window.clearInterval(this.timer);
+        // this.$refs.form.reset();
+
+        switch (roleType) {
+          case 0:
+            this.$toast("此手机号码还没有录入");
+            break;
+          case 1:
+            this.$notify({
+              message: `你当前登录用户为: ${name}`,
+              duration: 3000
+            });
+            this.$router.push({ path: "/home" });
+            break;
+          case 2:
+          case 3:
+            this.$notify({
+              message: `你当前登录用户为: ${name}`,
+              duration: 3000
+            });
+            let _cookie = Cookies.getJSON("info");
+            let obj = Object.assign({}, _cookie, res.data);
+            this.$store.dispatch("user/setInfo", obj).then(data => {
+              if (data.success === "ok") {
+                this.$router.push({ path: "/home" });
+              }
+            });
+            break;
+          case 4:
+            //进入注册页面
+            this.$router.push({
+              path: "/schoolCreate",
+              query: {
+                tel: res.data.tel,
+                openId: this.$route.query.openId
+              }
+            });
+            break;
+          case 5:
+            //老师进入绑定幼儿园页面
+            this.$router.push({
+              path: "/schoolJoin",
+              query: {
+                tel: res.data.tel,
+                openId: this.$route.query.openId
+              }
+            });
+            break;
+          case 6:
+            //学生进入完善信息页面
+            this.$router.push({
+              path: "/baby/supply",
+              query: {
+                tel: res.data.tel,
+                openId: this.$route.query.openId
+              }
+            });
+            break;
+          default:
+            this.$toast(`${res.errorMsg}`);
+        }
+      } else {
+        this.$toast(`${res.errorMsg}`);
+      }
+    },
     //加载更多班级圈
     onLoad() {
       //当组件滚动到底部时，会触发load事件

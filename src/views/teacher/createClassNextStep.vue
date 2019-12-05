@@ -257,7 +257,7 @@ export default {
       gradeTypeOff: false,
       columns: ["杭州", "宁波", "温州", "嘉兴", "湖州"],
       gradeColumns: ["杭州112", "宁波", "温州", "嘉兴", "湖州"],
-      grade: "",
+      grade: "",//年级
       gradeOff: false,
       identicalNameOff: false
     };
@@ -276,6 +276,27 @@ export default {
     },
     //提交
     submit() {
+       if (this.region == "请选择区域") {
+        this.$toast("请选择区域");
+        return false;
+      }
+      if (this.gradeType=="请选择班级类型") {
+        this.$toast("请选择班级类型");
+        return false;
+      }
+      if (this.form.schoolName == "") {
+        this.$toast("请输入学校名称");
+        return false;
+      }
+      if (this.grade == "") {
+        this.$toast("请选择年级");
+        return false;
+      }
+      if (this.form.className == "") {
+        this.$toast("请输入班级名称");
+        return false;
+      }
+      //同名班级
       this.identicalNameOff = true;
     },
     gradeBtn() {
@@ -410,15 +431,6 @@ export default {
       let res = await service.telVeriftCode({ tel, codeType: 0 });
       if (res.errorCode === 0) {
         this.$toast("验证码已经发送，请注意查收");
-        this.hidden = true;
-        this.timer = setInterval(() => {
-          if (this.second === 1) {
-            this.second = 60;
-            this.hidden = false;
-            window.clearInterval(this.timer);
-          }
-          this.second--;
-        }, 1000);
       } else if (res.errorCode === -1) {
         this.$toast(`${res.errorMsg}`);
       }
@@ -466,6 +478,7 @@ export default {
   mounted() {
     this.queryGrade();
     this.init();
+    console.log(this.$route.query.teacherName)
   }
 };
 </script>

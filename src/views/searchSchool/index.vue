@@ -25,19 +25,23 @@
           label="学校名称"
           placeholder="请输入学校名称"
           :border="false"
-          @change="onChange"
+          @input="onChange"
         />
       </van-cell-group>
       <div class="dimSearch">
         <ul>
-          <li>
-            <div>黄村幼儿园</div>
+          <li
+            v-for="(item, index) in schoolArr"
+            :key="index"
+            @click="schoolNameBtn(item)"
+          >
+            <div>{{ item.schoolname }}</div>
             <div><van-icon color="#fff" name="arrow" /></div>
           </li>
-          <li>
+          <!-- <li>
             <div>广州天河黄河幼儿园</div>
             <div><van-icon color="#fff" name="arrow" /></div>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>
@@ -57,22 +61,35 @@ export default {
       region: "请选择地区",
       regionOff: false,
       areaList: null,
-      addrCode: "440105",
+      addrCode: "440106",
       province: "",
       city: "",
       district: "",
-      haveSchool: 1 //1有学校，0没有学校
+      haveSchool: 1, //1有学校，0没有学校
+      schoolArr: [
+        {
+          schoolid: "1",
+          schoolname: "华景幼儿园"
+        },
+        {
+          schoolid: "1",
+          schoolname: "车陂幼儿园"
+        }
+      ]
     };
   },
   watch: {},
   computed: {},
   methods: {
+    schoolNameBtn(item) {
+      // console.log(item.schoolname);
+      this.gradeTel=item.schoolname
+    },
     onClose() {
       this.regionOff = false;
     },
-    onChange(event) {
-      // event.detail 为当前输入的值
-      console.log(this.gradeTel);
+    onChange(value) {
+      console.log(value);
     },
     searchDistrict() {
       this.regionOff = true;

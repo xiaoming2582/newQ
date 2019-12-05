@@ -9,10 +9,10 @@
         </div>
         <div class="gradeList">
           <ul>
-            <li @click="gradeBtn">一年级一班</li>
+            <li @click="gradeBtn" v-for="(item,index) in gradeArr" :key="index">{{item.classname}}</li>
+            <!-- <li>一年级一班</li>
             <li>一年级一班</li>
-            <li>一年级一班</li>
-            <li>一年级一班</li>
+            <li>一年级一班</li> -->
           </ul>
         </div>
         <van-popup
@@ -29,7 +29,17 @@
             </div>
             <div class="main2">
               <div class="message">
-                <p>张三（妈妈）153****5689</p>
+                <van-radio-group v-model="radio" bind:change="onChange">
+                  <div class="messageLis">
+                    <p>张三（妈妈）153****5689</p>
+                    <van-radio checked-color="#84CE09" name="1"></van-radio>
+                  </div>
+
+                  <div class="messageLis">
+                    <p>张三（妈妈）153****5689</p>
+                    <van-radio checked-color="#84CE09" name="2"></van-radio>
+                  </div>
+                </van-radio-group>
               </div>
               <div class="warn">
                 <p>请您谨慎确认孩子信息是否为同一人。</p>
@@ -38,7 +48,7 @@
           </div>
           <div class="bottom">
             <div class="noRelevance">不关联</div>
-            <div class="ensureRelevance">确认关联</div>
+            <div class="ensureRelevance" @click="relevance">确认关联</div>
           </div>
         </van-popup>
       </div>
@@ -67,12 +77,38 @@ export default {
       // haveSchool:this.$route.query.haveSchool
       haveSchool: 1,
       identicalName: 0, //1出现同名，0没有重名
-      identicalNameOff: false
+      identicalNameOff: false,
+      radio: 1,
+      gradeArr: [
+        {
+          classid: "1",
+          classname: "小一班",
+          classcode: "1234"
+        },
+        {
+          classid: "1",
+          classname: "小二班",
+          classcode: "1234"
+        },
+        {
+          classid: "1",
+          classname: "大一班",
+          classcode: "1234"
+        },
+        {
+          classid: "1",
+          classname: "一年级",
+          classcode: "1234"
+        }
+      ]
     };
   },
   watch: {},
   computed: {},
   methods: {
+    onChange(event) {
+      console.log(event);
+    },
     onClose() {
       this.identicalNameOff = false;
     },
@@ -102,6 +138,11 @@ export default {
           //点击取消按钮后的调用
           // console.log("点击了取消按钮噢");
         });
+    },
+    relevance() {
+      this.$router.push({
+        path: "/searchSchool/submitSucceed"
+      });
     }
   },
   created() {
@@ -223,7 +264,7 @@ export default {
       margin-top: 60px;
       .message {
         width: 70%;
-        height: 80px;
+        // height: 80px;
         background: #f6f6f6;
         line-height: 80px;
         text-align: center;
@@ -233,6 +274,12 @@ export default {
           height: 80px;
           line-height: 80px;
           color: #666666;
+          margin-right: 10px;
+        }
+        .messageLis {
+          padding: 0 30px;
+          display: flex;
+          line-height: 80px;
         }
       }
       .warn {

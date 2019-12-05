@@ -46,7 +46,7 @@
           <div class="cell-bd">
             <input
               class="input"
-              placeholder="请输入姓名"
+              placeholder="请输入小孩全名"
               maxlength="5"
               v-model.trim="form.studentName"
             />
@@ -84,12 +84,12 @@
 
         <div class="cell min-h120">
           <div class="cell-hd">
-            <label class="label">地址</label>
+            <label class="label">住址</label>
           </div>
           <div class="cell-bd">
             <input
               class="input"
-              placeholder="请输入地址"
+              placeholder="请输入家庭住址"
               maxlength="100"
               v-model.trim="form.address"
             />
@@ -98,7 +98,7 @@
 
         <div class="cell cell-select cell-select-after min-h120">
           <div class="cell-hd">
-            <label for class="label">关系</label>
+            <label for class="label">您与孩子的关系</label>
           </div>
           <div class="cell-bd">
             <select class="select" name dir="rtl" v-model="form.relation">
@@ -116,7 +116,7 @@
 
         <div class="cell min-h120">
           <div class="cell-hd">
-            <label class="label">家长手机号码</label>
+            <label class="label">手机号码</label>
           </div>
           <div class="cell-bd">
             <input
@@ -213,13 +213,17 @@ export default {
       this.filesObj = file.file;
     },
     async handleSubmit() {
-      let { studentName, tel } = this.form;
+      let { studentName, tel, verifyCode} = this.form;
       if (studentName == "") {
         this.$toast("请输入姓名");
         return;
       }
       if (isPhone(tel)) {
         //先上传头像
+        if (verifyCode == "") {
+        this.$toast("请输入验证码");
+        return;
+      }
         if (this.imageUrl) {
           //配置上传头部信息
           let config = {
@@ -303,19 +307,20 @@ export default {
             }
           }, 1000);
         });
+        this.telVeriftCode(this.form.tel)
       } else {
         this.$toast("请正确填写手机号");
       }
-    }
+    },
     //获取验证码
-    // async telVeriftCode(tel) {
-    //   let res = await service.telVeriftCode({ tel, codeType: 0 });
-    //   if (res.errorCode === 0) {
-    //     this.$toast("验证码已经发送，请注意查收");
-    //   } else if (res.errorCode === -1) {
-    //     this.$toast(`${res.errorMsg}`);
-    //   }
-    // }
+    async telVeriftCode(tel) {
+      let res = await service.telVeriftCode({ tel, codeType: 0 });
+      if (res.errorCode === 0) {
+        this.$toast("验证码已经发送，请注意查收");
+      } else if (res.errorCode === -1) {
+        this.$toast(`${res.errorMsg}`);
+      }
+    }
   }
 };
 </script>

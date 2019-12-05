@@ -20,7 +20,12 @@
               <label class="label">学生姓名</label>
             </div>
             <div class="cell-bd">
-              <input class="input" placeholder="请输入学生姓名" maxlength="5" v-model="form.studentName" />
+              <input
+                class="input"
+                placeholder="请输入学生姓名"
+                maxlength="5"
+                v-model="form.studentName"
+              />
             </div>
           </div>
           <div class="cell cell-select cell-select-after">
@@ -31,9 +36,10 @@
               <select class="select" name dir="rtl" v-model="form.sex">
                 <option
                   :value="option.id"
-                  v-for="(option,index) in sexList"
+                  v-for="(option, index) in sexList"
                   :key="index"
-                >{{ option.name }}</option>
+                  >{{ option.name }}</option
+                >
               </select>
             </div>
           </div>
@@ -47,15 +53,16 @@
                 <optgroup disabled hidden></optgroup>
                 <option
                   :value="option.classId"
-                  v-for="(option,index) in classList"
+                  v-for="(option, index) in classList"
                   :key="index"
-                >{{ option.className }}</option>
+                  >{{ option.className }}</option
+                >
               </select>
             </div>
           </div>
         </div>
         <div class="cells-title">家长信息</div>
-        <div class="cells" v-for="(link,index) in form.linkMan" :key="index">
+        <div class="cells" v-for="(link, index) in form.linkMan" :key="index">
           <div class="cell">
             <div class="cell-hd">
               <label class="label">家长手机号</label>
@@ -81,9 +88,10 @@
                 <optgroup disabled hidden></optgroup>
                 <option
                   :value="option.id"
-                  v-for="(option,index) in relationList"
+                  v-for="(option, index) in relationList"
                   :key="index"
-                >{{ option.name }}</option>
+                  >{{ option.name }}</option
+                >
               </select>
             </div>
           </div>
@@ -94,20 +102,22 @@
                 type="danger"
                 size="small"
                 @click="handleDelLinkMan(index)"
-              >删除</van-button>
+                >删除</van-button
+              >
             </div>
           </div>
         </div>
         <div class="cells-title ico">
-          <span></span>
-          <van-icon name="plus" />
+          <!-- <span></span> -->
+          <van-icon name="add-o" />
           <van-button
             type="info"
             size="small"
             native-type="button"
             class="add"
             @click="handleAddLinkMan"
-          >点击添加更多家长</van-button>
+            >点击添加更多家长</van-button
+          >
         </div>
       </form>
     </div>
@@ -121,12 +131,20 @@
     >
       <p>该班已存在以下同名学生</p>
       <p>请确认是否继续添加</p>
-      <div class="message" v-for="(item,index) in messageName" :key="index">{{item}}</div>
+      <div class="message" v-for="(item, index) in messageName" :key="index">
+        {{ item }}
+      </div>
     </van-dialog>
 
     <div class="page-ft">
       <div class="fixed-bottom" style="z-index: 100;">
-        <van-button size="large" type="info" class="no-radius" @click="handleSubmit">保存</van-button>
+        <van-button
+          size="large"
+          type="info"
+          class="no-radius"
+          @click="handleSubmit"
+          >保存</van-button
+        >
       </div>
     </div>
   </div>
@@ -300,7 +318,7 @@ export default {
 .ico {
   justify-content: flex-end;
   align-items: center;
-  font-size: 2px;
+  font-size: 40px;
   color: #a2e14e;
 }
 .add {
@@ -309,5 +327,6 @@ export default {
   border: none;
   color: #a2e14e;
   padding: 0 !important;
+  margin-left: 10px;
 }
 </style>

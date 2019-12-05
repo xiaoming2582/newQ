@@ -68,7 +68,7 @@
               <van-icon name="description" />
               <p>详情</p>
             </div>
-            <div class="pf" @click="handleWord(student)">
+            <div class="pf" @click="pass(student)">
               <van-icon name="completed" />
               <p>通过</p>
             </div>
@@ -546,6 +546,17 @@ export default {
       this.studentId = student.studentId;
       this.queryStduentpar(this.studentId);
     },
+    //通过
+    pass(student) {
+      console.log(student);
+      // this.phoneStatus = true;
+      // this.status = 2;
+      // this.parentInfo.name = student.studentName;
+      // this.studentInfo = student;
+      // this.studentId = student.studentId;
+      // this.queryStduentpar(this.studentId);
+      this.$toast('审核通过')
+    },
 
     //查询学生家长的关系
     async queryStduentpar(studentId) {
@@ -652,4 +663,7 @@ export default {
 //   margin: 20px 0;
 //   padding: 0 30px;
 // }
+.no-radius {
+  font-size: 30px;
+}
 </style>

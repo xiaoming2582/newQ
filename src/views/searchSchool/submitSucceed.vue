@@ -8,7 +8,7 @@
       <p>提交成功</p>
       <p>请耐心等候老师审核结果通知</p>
     </div>
-    <div class="home">返回首页</div>
+    <div class="home" @click="goHome">返回首页</div>
   </div>
 </template>
 
@@ -23,7 +23,13 @@ export default {
   },
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    goHome(){
+      this.$router.push({
+        path:"/home"
+      })
+    }
+  },
   created() {},
   mounted() {}
 };

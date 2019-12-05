@@ -51,6 +51,7 @@ import signature from './signature';
 import specialColumn from './specialColumn';
 import searchSchool from './searchSchool';
 import patriarchManage from './patriarchManage';
+import bindingList from './bindingList';
 
 Vue.use(Router);
 
@@ -103,7 +104,8 @@ export const constantRouterMap = [
   ...signature,
   ...specialColumn,
   ...searchSchool,
-  ...patriarchManage
+  ...patriarchManage,
+  ...bindingList
 ]
 
 
