@@ -28,22 +28,22 @@
           @input="onChange"
         />
       </van-cell-group>
-      <div class="dimSearch">
-        <ul>
-          <li
-            v-for="(item, index) in schoolArr"
-            :key="index"
-            @click="schoolNameBtn(item)"
-          >
-            <div>{{ item.schoolname }}</div>
-            <div><van-icon color="#fff" name="arrow" /></div>
-          </li>
-          <!-- <li>
+    </div>
+    <div class="dimSearch" v-if="schoolShow">
+      <ul>
+        <li
+          v-for="(item, index) in schoolArr"
+          :key="index"
+          @click="schoolNameBtn(item)"
+        >
+          <div>{{ item.schoolname }}</div>
+          <div><van-icon color="#fff" name="arrow" /></div>
+        </li>
+        <!-- <li>
             <div>广州天河黄河幼儿园</div>
             <div><van-icon color="#fff" name="arrow" /></div>
           </li> -->
-        </ul>
-      </div>
+      </ul>
     </div>
     <div class="searchBtn" @click="searchBtn">搜索</div>
   </div>
@@ -51,6 +51,7 @@
 
 <script>
 import areaList from "@/utils/area";
+import service from "@/api";
 export default {
   components: {
     areaList
@@ -65,31 +66,50 @@ export default {
       province: "",
       city: "",
       district: "",
-      haveSchool: 1, //1有学校，0没有学校
       schoolArr: [
-        {
-          schoolid: "1",
-          schoolname: "华景幼儿园"
-        },
-        {
-          schoolid: "1",
-          schoolname: "车陂幼儿园"
-        }
-      ]
+        // {
+        //   schoolid: "1",
+        //   schoolname: "华景幼儿园"
+        // },
+      ],
+      schoolShow: false,
+      schoolid: 0 //学校ID
     };
   },
   watch: {},
   computed: {},
   methods: {
     schoolNameBtn(item) {
-      // console.log(item.schoolname);
-      this.gradeTel=item.schoolname
+      // console.log(item.schoolid);
+      this.schoolid = item.schoolid;
+      this.gradeTel = item.schoolname;
+      this.schoolShow = false;
     },
     onClose() {
       this.regionOff = false;
     },
     onChange(value) {
-      console.log(value);
+      this.schoolid = 0;
+      // console.log(value);
+      let params = {
+        schoolname: value,
+        regioncode: "01"
+      };
+      if (value) {
+        this.querySchoolList(params);
+      } else {
+        this.schoolShow = false;
+      }
+    },
+    //学校查询
+    async querySchoolList(params = {}) {
+      let res = await service.querySchoolList(params);
+      if (res.errorCode === 0) {
+        if (res.data) {
+          this.schoolShow = true;
+          this.schoolArr = res.data;
+        }
+      }
     },
     searchDistrict() {
       this.regionOff = true;
@@ -112,12 +132,34 @@ export default {
       this.regionOff = false;
     },
     searchBtn() {
-      this.$router.push({
-        path: "/searchSchool/result",
-        query: {
-          haveSchool: this.haveSchool
-        }
-      });
+      if (this.region == "请选择地区") {
+        this.$toast("请选择地区");
+        return false;
+      }
+      if (this.gradeTel == "") {
+        this.$toast("输入学校名称");
+        return false;
+      }
+      let params = {
+        schoolid: this.schoolid,
+        schoolname: this.gradeTel
+      };
+      this.querySchoolClassList(params);
+    },
+    //搜索
+    async querySchoolClassList(params = {}) {
+      let res = await service.querySchoolClassList(params);
+      if (res.errorCode === 0) {
+        this.$router.push({
+          path: "/searchSchool/result",
+          query: {
+            schoolid: this.schoolid,
+            schoolname: this.gradeTel,
+          }
+        });
+      } else {
+        this.$toast(res.errorMsg);
+      }
     }
   },
   created() {
@@ -129,7 +171,7 @@ export default {
 <style lang="less" scoped>
 .wrapper {
   width: 90vw;
-  height: 200px;
+  height: 100%;
   background: #fff;
   border-radius: 10px;
   //   display: flex;
@@ -157,28 +199,29 @@ export default {
   .schoolName {
     height: 100px;
     line-height: 100px;
-    position: relative;
     .van-cell {
       padding: 0;
       line-height: 100px;
     }
-    .dimSearch {
-      position: absolute;
-      bottom: -200px;
-      left: 50%;
-      transform: translate(-50%, 0);
-      width: 80vw;
-      height: 200px;
-      background: #b4b2b2;
-      border-radius: 20px;
-      padding: 0 30px;
-      color: #fff;
-      ul {
-        li {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
+  }
+  .dimSearch {
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 80vw;
+    // height: 200px;
+    background: #b4b2b2;
+    border-radius: 20px;
+    padding: 0 30px;
+    color: #fff;
+    margin-bottom: 100px;
+    ul {
+      li {
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
     }
   }

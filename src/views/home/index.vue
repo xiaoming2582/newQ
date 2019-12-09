@@ -274,7 +274,7 @@ export default {
       teacherGradeTel: "",
       gradeYZM: "",
       teacherGradeYZM: "",
-      haveKid: 0//1有小孩，0没有小孩
+      result: "" //1有小孩，0没有小孩
     };
   },
   computed: {
@@ -353,29 +353,41 @@ export default {
     },
     findGrade() {
       this.accessGradeOff = false;
-      if (this.haveKid) {
-        this.$router.push({
-          path: "/searchSchool"
-        });
-      } else {
-        this.$dialog
-          .alert({
-            title: "提示",
-            message: "您还没有添加小孩\n为了使您体验更多请先去添加", //改变弹出框的内容
-            showCancelButton: true, //展示取消按钮
-            confirmButtonText: "添加小孩",
-            cancelButtonColor: "#C2C2C2"
-          })
-          .then(() => {
-            //点击确认按钮后的调用
-            this.$router.push({
-              path: "/child/add"
-            });
-          })
-          .catch(() => {
-            //点击取消按钮后的调用
-            // console.log("点击了取消按钮噢");
+      let params = {
+        openid: this.$store.state.user.info.openId
+      };
+      this.queryStudentExist(params);
+    },
+    //查找班级-判断家长是否有学生
+    async queryStudentExist(params = {}) {
+      let res = await service.queryStudentExist(params);
+      if (res.errorCode === 0) {
+        console.log(res.data.result);
+        this.result = res.data.result;
+        if (this.result) {
+          this.$router.push({
+            path: "/searchSchool"
           });
+        } else {
+          this.$dialog
+            .alert({
+              title: "提示",
+              message: "您还没有添加小孩\n为了使您体验更多请先去添加", //改变弹出框的内容
+              showCancelButton: true, //展示取消按钮
+              confirmButtonText: "添加小孩",
+              cancelButtonColor: "#C2C2C2"
+            })
+            .then(() => {
+              //点击确认按钮后的调用
+              this.$router.push({
+                path: "/child/add"
+              });
+            })
+            .catch(() => {
+              //点击取消按钮后的调用
+              // console.log("点击了取消按钮噢");
+            });
+        }
       }
     },
     entranceBtn() {

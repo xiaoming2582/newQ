@@ -29,6 +29,8 @@ import * as director from './module/director';
 import * as image from './module/image';
 import * as data from './module/data';
 import * as alarmClock from './module/alarm-clock';
+
+import * as home from './module/home';
 export default {
   ...album,
   ...clock,
@@ -59,5 +61,6 @@ export default {
   ...director,
   ...image,
   ...data,
-  ...alarmClock
+  ...alarmClock,
+  ...home
 }

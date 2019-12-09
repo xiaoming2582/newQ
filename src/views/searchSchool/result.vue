@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper">
-    <div v-if="haveSchool === 1" class="haveSchool">
-      <div class="SchoolName">黄村幼儿园</div>
+    <div v-if="haveSchool === -1"></div>
+    <div v-else-if="haveSchool === 1" class="haveSchool">
+      <div class="SchoolName">{{ schoolname }}</div>
       <div class="grade">
         <div class="titleHZM">
           <span class="longString"></span
@@ -9,7 +10,13 @@
         </div>
         <div class="gradeList">
           <ul>
-            <li @click="gradeBtn" v-for="(item,index) in gradeArr" :key="index">{{item.classname}}</li>
+            <li
+              @click="gradeBtn(item)"
+              v-for="(item, index) in gradeArr"
+              :key="index"
+            >
+              {{ item.classname }}
+            </li>
             <!-- <li>一年级一班</li>
             <li>一年级一班</li>
             <li>一年级一班</li> -->
@@ -30,15 +37,26 @@
             <div class="main2">
               <div class="message">
                 <van-radio-group v-model="radio" bind:change="onChange">
-                  <div class="messageLis">
-                    <p>张三（妈妈）153****5689</p>
-                    <van-radio checked-color="#84CE09" name="1"></van-radio>
+                  <div
+                    class="messageLis"
+                    v-for="(item, index) in patriarchList"
+                    :key="index"
+                  >
+                    <p>
+                      {{ item.studentname }} ({{ item.relation }})
+                      {{ item.phone }}
+                    </p>
+                    <van-radio
+                      checked-color="#84CE09"
+                      :name="index"
+                      @click="selectPatriarch(item)"
+                    ></van-radio>
                   </div>
 
-                  <div class="messageLis">
+                  <!-- <div class="messageLis">
                     <p>张三（妈妈）153****5689</p>
                     <van-radio checked-color="#84CE09" name="2"></van-radio>
-                  </div>
+                  </div> -->
                 </van-radio-group>
               </div>
               <div class="warn">
@@ -69,45 +87,101 @@
 </template>
 
 <script>
+import service from "@/api";
 export default {
   components: {},
   props: {},
   data() {
     return {
-      // haveSchool:this.$route.query.haveSchool
-      haveSchool: 1,
+      schoolname: this.$route.query.schoolname,
+      gradeArr: [],
+      schoolid: this.schoolid,
+      haveSchool: -1,
       identicalName: 0, //1出现同名，0没有重名
       identicalNameOff: false,
-      radio: 1,
-      gradeArr: [
+      radio: "",
+      classcode: "",
+      classid: "",
+      schoolid: "",
+      patriarchList: [
         {
-          classid: "1",
-          classname: "小一班",
-          classcode: "1234"
+          parentid: 7,
+          phone: "15386040940",
+          relation: "爸爸",
+          studentid: 1,
+          studentname: "张三"
         },
         {
-          classid: "1",
-          classname: "小二班",
-          classcode: "1234"
-        },
-        {
-          classid: "1",
-          classname: "大一班",
-          classcode: "1234"
-        },
-        {
-          classid: "1",
-          classname: "一年级",
-          classcode: "1234"
+          parentid: 7,
+          phone: "15386040940",
+          relation: "爸爸",
+          studentid: 2,
+          studentname: "张三"
         }
-      ]
+      ],
+      sameStudentId: "",
+      sameStudentTel: ""
+      // gradeArr: [
+      //   {
+      //     classid: "1",
+      //     classname: "小一班",
+      //     classcode: "1234"
+      //   },
+      //   {
+      //     classid: "1",
+      //     classname: "小二班",
+      //     classcode: "1234"
+      //   },
+      //     {
+      //     classid: "1",
+      //     classname: "小一班",
+      //     classcode: "1234"
+      //   },
+      //   {
+      //     classid: "1",
+      //     classname: "小二班",
+      //     classcode: "1234"
+      //   },  {
+      //     classid: "1",
+      //     classname: "小一班",
+      //     classcode: "1234"
+      //   },
+      //   {
+      //     classid: "1",
+      //     classname: "小二班",
+      //     classcode: "1234"
+      //   }
+      // ],
     };
   },
   watch: {},
   computed: {},
   methods: {
+    gradeList() {
+      let params = {
+        schoolid: this.$route.query.schoolid * 1,
+        schoolname: this.$route.query.schoolname
+      };
+      this.querySchoolClassList(params);
+    },
+    //班级列表
+    async querySchoolClassList(params = {}) {
+      let res = await service.querySchoolClassList(params);
+      if (res.errorCode === 0) {
+        this.gradeArr = res.data.arr;
+        this.haveSchool = res.data.result;
+        this.schoolid = res.data.schoolid;
+      } else {
+        this.$toast(res.errorMsg);
+      }
+    },
     onChange(event) {
       console.log(event);
+    },
+    selectPatriarch(item) {
+      console.log(item);
+      this.sameStudentId = item.studentid;
+      this.sameStudentTel = item.phone;
     },
     onClose() {
       this.identicalNameOff = false;
@@ -115,10 +189,12 @@ export default {
     deleteBtn() {
       this.identicalNameOff = false;
     },
-    gradeBtn() {
+    gradeBtn(item) {
+      this.classcode = item.classcode;
+      this.classid = item.classid;
       this.$dialog
         .alert({
-          title: "一年级二班",
+          title: item.classname,
           message: "确认要申请加入该班级吗？", //改变弹出框的内容
           showCancelButton: true, //展示取消按钮
           confirmButtonText: "申请加入",
@@ -126,29 +202,95 @@ export default {
         })
         .then(() => {
           //点击确认按钮后的调用
-          if (this.identicalName) {
-            this.identicalNameOff = true;
-          } else {
-            this.$router.push({
-              path: "/searchSchool/submitSucceed"
-            });
-          }
+          let params = {
+            studentid: this.$store.state.user.info.studentid * 1,
+            classid: this.classid,
+            openid: this.$store.state.user.info.openId,
+            schoolid: this.schoolid,
+          };
+          this.parentJoinStudentForClass(params);
+          // if (this.identicalName) {
+          //   this.identicalNameOff = true;
+          // } else {
+          //   this.$router.push({
+          //     path: "/searchSchool/submitSucceed"
+          //   });
+          // }
         })
         .catch(() => {
           //点击取消按钮后的调用
           // console.log("点击了取消按钮噢");
         });
     },
+    async parentJoinStudentForClass(params = {}) {
+      let res = await service.parentJoinStudentForClass(params);
+      if (res.errorCode === 0) {
+        // let flag = res.data.flag;
+        let flag = 2;
+        if (flag === 0) {
+          this.$toast("加入班级成功");
+          this.$router.push({
+            path: "/home"
+          });
+        } else if (flag === 1) {
+          this.$router.push({
+            path: "/searchSchool/submitSucceed",
+            query: {
+              flag: flag
+            }
+          });
+        } else if (flag === 2) {
+          this.identicalNameOff = true;
+          let params = {
+            openid: this.$store.state.user.info.openId,
+            studentname: this.$store.state.user.info.studentname,
+            classid: this.classid
+          };
+          this.querySameNameStudentsInClass(params);
+        }
+      } else {
+        this.$toast(res.errorMsg);
+      }
+    },
+    //同名列表
+    async querySameNameStudentsInClass(params = {}) {
+      let res = await service.querySameNameStudentsInClass(params);
+      if (res.errorCode === 0) {
+        if (res.data) {
+          // this.patriarchList=res.data
+        }
+      }
+    },
     relevance() {
-      this.$router.push({
-        path: "/searchSchool/submitSucceed"
-      });
+      let params = {
+        openid: this.$store.state.user.info.openId,
+        studentid: this.sameStudentId,
+        phone: this.sameStudentTel
+      };
+      this.submitAuditJoinClassToMainParent(params);
+    },
+    //同名列表-确认关联
+    async submitAuditJoinClassToMainParent(params = {}) {
+      let res = await service.submitAuditJoinClassToMainParent(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$router.push({
+            path: "/searchSchool/submitSucceed",
+            query:{
+              flag:2
+            }
+          });
+        }
+      }
     }
   },
   created() {
-    console.log(this.haveSchool);
+    // console.log(this.$route.query.gradeList);
+    // console.log(this.schoolname)
   },
-  mounted() {}
+  mounted() {
+    this.gradeList();
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -200,12 +342,12 @@ export default {
     .grade {
       //   height: 100px;
       line-height: 100px;
-      margin: 0 30px;
+      margin-left: 38px;
       .gradeList {
         ul {
           display: flex;
           flex-wrap: wrap;
-          justify-content: space-between;
+          // justify-content: space-between;
           li {
             width: 200px;
             height: 60px;
@@ -216,6 +358,7 @@ export default {
             line-height: 60px;
             color: #fff;
             margin-bottom: 40px;
+            margin-right: 37px;
           }
         }
       }
@@ -277,7 +420,7 @@ export default {
           margin-right: 10px;
         }
         .messageLis {
-          padding: 0 30px;
+          padding: 0 25px;
           display: flex;
           line-height: 80px;
         }

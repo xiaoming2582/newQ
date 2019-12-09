@@ -213,7 +213,14 @@ export default {
       this.filesObj = file.file;
     },
     async handleSubmit() {
-      let { studentName, tel, verifyCode} = this.form;
+      let { studentName, tel, verifyCode } = this.form;
+      let params = {
+        openid: this.form.openId,
+        name: this.form.studentName,
+        gender: this.form.sex,
+        phone: this.form.tel,
+        relation: this.form.relation
+      };
       if (studentName == "") {
         this.$toast("请输入姓名");
         return;
@@ -221,9 +228,9 @@ export default {
       if (isPhone(tel)) {
         //先上传头像
         if (verifyCode == "") {
-        this.$toast("请输入验证码");
-        return;
-      }
+          this.$toast("请输入验证码");
+          return;
+        }
         if (this.imageUrl) {
           //配置上传头部信息
           let config = {
@@ -258,33 +265,48 @@ export default {
             }
           }
         } else {
-          this.addStudentWithOpen(this.form);
+          this.createStudent(params);
         }
       } else {
         this.$toast("请正确填写手机号");
       }
     },
-    //添加孩子
-    async addStudentWithOpen(params = {}) {
-      let res = await service.addStudentWithOpen(params);
+    async createStudent(params = {}) {
+      let res = await service.createStudent(params);
       if (res.errorCode === 0) {
-        let { first, ...args } = res.data;
-        //如果是第一个添加的孩子，则自动关联上
-        if (first) {
-          let _cookie = Cookies.getJSON("info");
-          let obj = Object.assign({}, _cookie, args);
-          this.$store.dispatch("user/setInfo", obj).then(data => {
-            if (data.success === "ok") {
-              this.$router.go(-1);
-            }
-          });
-        } else {
-          this.$router.go(-1);
-        }
-      } else {
-        this.$toast(`${res.errorMsg}`);
+        // console.log(111)
+        let args = res.data;
+        let _cookie = Cookies.getJSON("info");
+        let obj = Object.assign({}, _cookie, args);
+        console.log(obj);
+        this.$store.dispatch("user/setInfo", obj).then(data => {
+          if (data.success === "ok") {
+            this.$router.go(-1);
+          }
+        });
       }
     },
+    //添加孩子
+    // async addStudentWithOpen(params = {}) {
+    //   let res = await service.addStudentWithOpen(params);
+    //   if (res.errorCode === 0) {
+    //     let { first, ...args } = res.data;
+    //     //如果是第一个添加的孩子，则自动关联上
+    //     if (first) {
+    //       let _cookie = Cookies.getJSON("info");
+    //       let obj = Object.assign({}, _cookie, args);
+    //       this.$store.dispatch("user/setInfo", obj).then(data => {
+    //         if (data.success === "ok") {
+    //           this.$router.go(-1);
+    //         }
+    //       });
+    //     } else {
+    //       this.$router.go(-1);
+    //     }
+    //   } else {
+    //     this.$toast(`${res.errorMsg}`);
+    //   }
+    // },
     //点击获取验证码
     acquireYZM() {
       if (isPhone(this.form.tel)) {
@@ -307,7 +329,7 @@ export default {
             }
           }, 1000);
         });
-        this.telVeriftCode(this.form.tel)
+        this.telVeriftCode(this.form.tel);
       } else {
         this.$toast("请正确填写手机号");
       }

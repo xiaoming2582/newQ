@@ -18,7 +18,7 @@ export default {
   props: {},
   data() {
     return {
-      auditUser: 2 //1老师审核，2家长审核
+      auditUser: this.$route.query.flag //1老师审核，2家长审核
     };
   },
   watch: {},
