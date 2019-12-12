@@ -40,10 +40,26 @@
                 class="input"
                 placeholder="请输入学校名称"
                 v-model="form.schoolName"
-                @blur="handleSearch($event)"
+                @input="handleSearch()"
               />
             </div>
           </div>
+        </div>
+        <div class="dimSearch" style="z-index:3" v-if="schoolShow">
+          <ul>
+            <li
+              v-for="(item, index) in schoolArr"
+              :key="index"
+              @click="schoolNameBtn(item)"
+            >
+              <div>{{ item.schoolname }}</div>
+              <div><van-icon color="#fff" name="arrow" /></div>
+            </li>
+            <!-- <li>
+            <div>广州天河黄河幼儿园</div>
+            <div><van-icon color="#fff" name="arrow" /></div>
+          </li> -->
+          </ul>
         </div>
         <div class="area">
           <div><span>年级</span></div>
@@ -204,11 +220,11 @@
     >
       <div class="main">
         <div class="mainTitle">提示</div>
-        <div class="main2">此学校已存在同名班级是否继续建立？</div>
+        <div class="main2">此学校已存在同名班级,请更改班级名称！</div>
       </div>
       <div class="bottom">
-        <div class="noRelevance" @click="continueAdd">继续添加</div>
-        <div class="ensureRelevance" @click="alter">更改名称</div>
+        <div class="ensureRelevance" @click="continueAdd">取消</div>
+        <div class="noRelevance" @click="alter">确定</div>
       </div>
     </van-popup>
   </div>
@@ -255,18 +271,48 @@ export default {
       city: "",
       district: "",
       gradeTypeOff: false,
-      columns: ["杭州", "宁波", "温州", "嘉兴", "湖州"],
-      gradeColumns: ["杭州112", "宁波", "温州", "嘉兴", "湖州"],
-      grade: "",//年级
+      columns: ["学校班级", "培训机构", "其他"],
+      classtype: "",
+      gradeColumns: [
+        "一年级",
+        "二年级",
+        "三年级",
+        "四年级",
+        "五年级",
+        "六年级",
+        "七年级",
+        "八年级",
+        "九年级",
+        "托班",
+        "小班",
+        "中班",
+        "大班",
+        "培训机构"
+      ],
+      gradeNum: "",
+      grade: "", //年级
       gradeOff: false,
-      identicalNameOff: false
+      identicalNameOff: false,
+      schoolShow: false,
+      schoolArr: [
+        //   {
+        //   schoolid: "1",
+        //   schoolname: "华景幼儿园"
+        // },
+      ],
+      schoolid: 0 //学校ID
     };
   },
   methods: {
-    continueAdd(){
-      this.$router.push({
-        path:"/teacher/success"
-      })
+    //选择学校
+    schoolNameBtn(item) {
+      // console.log(item.schoolid);
+      this.schoolid = item.schoolid;
+      this.form.schoolName = item.schoolname;
+      this.schoolShow = false;
+    },
+    continueAdd() {
+     this.identicalNameOff = false;
     },
     alter() {
       this.identicalNameOff = false;
@@ -276,11 +322,11 @@ export default {
     },
     //提交
     submit() {
-       if (this.region == "请选择区域") {
+      if (this.region == "请选择区域") {
         this.$toast("请选择区域");
         return false;
       }
-      if (this.gradeType=="请选择班级类型") {
+      if (this.gradeType == "请选择班级类型") {
         this.$toast("请选择班级类型");
         return false;
       }
@@ -296,9 +342,100 @@ export default {
         this.$toast("请输入班级名称");
         return false;
       }
+      switch (this.gradeType) {
+        case "学校班级":
+          this.classtype = 0;
+          break;
+        case "培训机构":
+          this.classtype = 1;
+          break;
+        case "其他":
+          this.classtype = 2;
+          break;
+        default:
+          this.classtype = -1;
+      }
+      switch (this.grade) {
+        case "一年级":
+          this.gradeNum = 1;
+          break;
+        case "二年级":
+          this.gradeNum = 2;
+          break;
+        case "三年级":
+          this.gradeNum = 3;
+          break;
+        case "四年级":
+          this.gradeNum = 4;
+          break;
+        case "五年级":
+          this.gradeNum = 5;
+          break;
+        case "六年级":
+          this.gradeNum = 6;
+          break;
+        case "七年级":
+          this.gradeNum = 7;
+          break;
+        case "八年级":
+          this.gradeNum = 8;
+          break;
+        case "九年级":
+          this.gradeNum = 9;
+          break;
+        case "托班":
+          this.gradeNum = -4;
+          break;
+
+        case "小班":
+          this.gradeNum = -3;
+          break;
+        case "中班":
+          this.gradeNum = -2;
+          break;
+        case "大班":
+          this.gradeNum = -1;
+          break;
+        case "培训机构":
+          this.gradeNum = 0;
+          break;
+      }
+      let params = {
+        openid: this.$store.state.user.info.openId,
+        teachername: this.$route.query.teacherName,
+        gender: this.$route.query.sex * 1,
+        phone: this.$route.query.tel,
+        areacode: "01",
+        classtype: this.classtype,
+        schoolid: this.schoolid,
+        schoolname: this.form.schoolName,
+        grade: this.gradeNum,
+        classname: this.form.className
+      };
+      this.createClass(params);
       //同名班级
-      this.identicalNameOff = true;
+      // this.identicalNameOff = true;
     },
+    async createClass(params = {}) {
+      let res = await service.createClass(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$router.push({
+            path: "/teacher/success",
+            query: {
+              classid: res.data.resultdata.classid,
+              classcode: res.data.resultdata.classcode,
+              classname: res.data.resultdata.classname
+            }
+          });
+        }
+      } else {
+        if (res.data.result === 0) {
+          this.identicalNameOff = true;
+        }
+      }
+    },
+
     gradeBtn() {
       this.gradeOff = true;
     },
@@ -355,8 +492,29 @@ export default {
       this.form.id = value.id;
       this.popupShow = false;
     },
-    handleSearch(e) {
-      this.querySchoolName(e.target.value);
+    handleSearch() {
+      // this.querySchoolName(e.target.value);
+      this.schoolid = 0;
+      // console.log(value);
+      let params = {
+        schoolname: this.form.schoolName,
+        regioncode: "01"
+      };
+      if (this.form.schoolName) {
+        this.querySchoolList(params);
+      } else {
+        this.schoolShow = false;
+      }
+    },
+    //学校查询
+    async querySchoolList(params = {}) {
+      let res = await service.querySchoolList(params);
+      if (res.errorCode === 0) {
+        if (res.data) {
+          this.schoolShow = true;
+          this.schoolArr = res.data;
+        }
+      }
     },
     // handleSecond() {
     //   if (isPhone(this.form.tel)) {
@@ -478,7 +636,7 @@ export default {
   mounted() {
     this.queryGrade();
     this.init();
-    console.log(this.$route.query.teacherName)
+    console.log(this.$route.query.teacherName);
   }
 };
 </script>
@@ -570,6 +728,28 @@ export default {
     }
     .ensureRelevance {
       color: #c2c2c2;
+    }
+  }
+}
+
+.dimSearch {
+  position: absolute;
+  top: 300px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 80vw;
+  // height: 200px;
+  background: #b4b2b2;
+  border-radius: 20px;
+  padding: 0 30px;
+  color: #fff;
+  margin-bottom: 100px;
+  ul {
+    li {
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
   }
 }

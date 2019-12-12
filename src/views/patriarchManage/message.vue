@@ -107,11 +107,10 @@ export default {
         studentId: this.$route.query.studentId
       },
       form: {
-        studentName: "",
-        sex: "",
-        birthday: "",
+        studentid: this.$store.state.user.info.studentId,
+        birthday: this.$route.query.phone,
         site: "",
-        relation:""
+        relation: 1
       },
       classList: [],
       studentList: [],
@@ -120,42 +119,77 @@ export default {
   },
   methods: {
     handleDel() {
-      let { studentId } = this.form;
-      if (studentId) {
+      let parentid = this.$route.query.parentid;
+      if (parentid) {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "确定要移除学生吗？"
+            message: "确定要移除家长吗？"
           })
           .then(() => {
-            this.studentDelete({
-              studentId,
-              openId: this.$store.state.user.info.openId,
-              classId: this.$route.query.classId,
-              tel: this.querys.tel
-            });
+            let params = {
+              parentid:parentid
+            };
+            this.removeRelation(params);
           })
           .catch(() => {});
       }
     },
+    //移除
+    async removeRelation(params = {}) {
+      let res = await service.removeRelation(params);
+      if (res.errorCode === 0) {
+        this.$router.go(-1);
+      }
+    },
     handleSubmit() {
-      let { studentName, classId, linkMan } = this.form;
-      if (studentName == "" || !studentName.length) {
-        this.$toast("请输入学生姓名");
+      let { birthday, relation } = this.form;
+      // console.log(birthday)
+      if (!isPhone(birthday)) {
+        this.$toast("请正确填写手机号");
+        return;
+      }
+      if (relation == "") {
+        this.$toast("请选择关系");
         return false;
       }
-      if (!classId) {
-        this.$toast("请选择学生所在班级");
-        return false;
+      //    switch (relation) {
+      //   case 1:
+      //     this.form.relation = "妈妈";
+      //     break;
+      //   case 2:
+      //     this.form.relation = "爸爸";
+      //     break;
+      //   case 3:
+      //     this.form.relation = "爷爷";
+      //     break;
+      //   case 4:
+      //     this.form.relation = "奶奶";
+      //     break;
+      //   case 5:
+      //     this.form.relation = "外公";
+      //     break;
+      //   case 6:
+      //     this.form.relation = "外婆";
+      //     break;
+      //   case 7:
+      //     this.form.relation = "监护人";
+      //     break;
+      // }
+      let params = {
+        studentid: this.$store.state.user.info.studentId,
+        parentid: this.$route.query.parentid,
+        phone: this.form.birthday,
+        relation: this.form.relation
+      };
+      this.updateRelation(params);
+    },
+    //保存
+    async updateRelation(params = {}) {
+      let res = await service.updateRelation(params);
+      if (res.errorCode === 0) {
+        this.$router.go(-1);
       }
-      for (let i = 0; i < linkMan.length; i++) {
-        let tel = linkMan[i].tel;
-        if (!isPhone(tel)) {
-          this.$toast("请正确填写手机号");
-          return;
-        }
-      }
-      this.studentUpdate(this.form);
     },
     //学生信息查询
     // async studentInfoQuery(params = {}) {
@@ -213,6 +247,36 @@ export default {
         this.classList = res.data;
       }
     }
+  },
+  created() {
+    let relation = this.$route.query.relation;
+    console.log(relation);
+    switch (relation) {
+      case "妈妈":
+        this.form.relation = 1;
+        break;
+      case "爸爸":
+        this.form.relation = 2;
+        break;
+      case "爷爷":
+        this.form.relation = 3;
+        break;
+      case "奶奶":
+        this.form.relation = 4;
+        break;
+      case "外公":
+        this.form.relation = 5;
+        break;
+      case "外婆":
+        this.form.relation = 6;
+        break;
+      case "监护人":
+        this.form.relation = 7;
+        break;
+      default:
+        this.form.relation = 8;
+    }
+    console.log(this.form.relation);
   },
   mounted() {
     this.queryTeacherClass(this.query);

@@ -50,9 +50,13 @@
       </template>
       <template v-else>
         <div class="flex a-i-c home-user gradient-two" @click="handleRoleJump">
-          <div
+          <!-- <div
             class="switch-role"
             v-if="roleList.length == 2"
+            @click.stop="jumpRoleSelect"
+          > -->
+           <div
+            class="switch-role"
             @click.stop="jumpRoleSelect"
           >
             <van-icon name="replay" size="16px"></van-icon>

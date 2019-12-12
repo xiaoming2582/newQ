@@ -42,15 +42,15 @@
           class="cell min-h120"
           v-for="(student, index) in studentListed"
           :key="index"
-          @click="message"
+          @click="message(student)"
         >
           <!-- <div class="num" v-if="studentListed.length < 9">
               0{{ index + 1 }}
             </div>
             <div class="num" v-else>{{ index + 1 }}</div> -->
           <div class="cell-hd">
-            <template v-if="student.photo">
-              <img :src="student.photo" width="35" height="35" radius="50" />
+            <template v-if="student.headimg">
+              <img :src="student.headimg" width="35" height="35" radius="50" />
             </template>
             <template v-else>
               <img
@@ -62,8 +62,8 @@
             </template>
           </div>
           <div class="cell-bd cell-hd pl-20">
-            <p class="patriarchName">{{ student.studentName }}</p>
-            <p class="HzmTle">15458759457</p>
+            <p class="patriarchName">{{ student.nickname }}</p>
+            <p class="HzmTle">{{ student.phone }}</p>
           </div>
 
           <div class="cell-ft flex">
@@ -78,7 +78,7 @@
       <div class="cells">
         <div
           class="cell min-h120"
-          v-for="(student, index) in studentListed"
+          v-for="(student, index) in studentListing"
           :key="index"
         >
           <!-- <div class="num" v-if="studentListed.length < 9">
@@ -86,8 +86,8 @@
             </div>
             <div class="num" v-else>{{ index + 1 }}</div> -->
           <div class="cell-hd">
-            <template v-if="student.photo">
-              <img :src="student.photo" width="35" height="35" radius="50" />
+            <template v-if="student.headimg">
+              <img :src="student.headimg" width="35" height="35" radius="50" />
             </template>
             <template v-else>
               <img
@@ -99,8 +99,8 @@
             </template>
           </div>
           <div class="cell-bd cell-hd pl-20">
-            <p>{{ student.studentName }}</p>
-            <p class="HzmTle">15458759457</p>
+            <p>{{ student.nickname }}</p>
+            <p class="HzmTle">{{ student.phone }}</p>
           </div>
           <div class="cell-ft flex">
             <div class="pf" @click="details(student)">
@@ -253,7 +253,9 @@ export default {
         phone: []
       },
       studentInfo: {},
-      title: ""
+      title: "",
+      // studentid: this.$store.state.user.info.studentId
+      studentid: 19
     };
   },
   computed: {
@@ -273,10 +275,23 @@ export default {
     })
   },
   methods: {
-    message() {
-        this.$router.push({
-            path:"/patriarchManage/message",
-        })
+    async parentList(studentid) {
+      let res = await service.parentList({ studentid });
+      if (res.errorCode === 0) {
+        this.studentListed = res.data.approved;
+        this.studentListing = res.data.submit;
+      }
+    },
+    message(student) {
+      console.log(student);
+      this.$router.push({
+        path: "/patriarchManage/message",
+        query:{
+          parentid:student.parentid,
+          phone:student.phone,
+          relation:student.relation,
+        }
+      });
     },
     //留言-取消
     leaveWordOff() {
@@ -338,13 +353,13 @@ export default {
       });
     },
     details(student) {
+      console.log(student);
       this.$router.push({
         path: `/patriarchManage/audit`,
         query: {
-          tel: student.tel,
-          studentId: student.studentId,
-          classId: student.classId,
-          openDirection: this.openDirection
+          phone: student.phone,
+          relation: student.relation,
+          parentid: student.parentid
         }
       });
     },
@@ -354,8 +369,20 @@ export default {
           title: "提示",
           message: "您确定要删除该家长吗？"
         })
-        .then(() => {})
+        .then(() => {
+           let params={
+              parentid:student.parentid
+            }
+            this.submitUnapproved(params);
+        })
         .catch(() => {});
+    },
+    //删除
+    async submitUnapproved(params = {}) {
+      let res = await service.submitUnapproved(params);
+      if (res.errorCode === 0) {
+       this.parentList(this.studentid);
+      }
     },
     handleJumpRoute() {
       this.$router.push({
@@ -417,7 +444,7 @@ export default {
     //   this.queryStduentpar(this.studentId);
     // },
 
-       //通过
+    //通过
     pass(student) {
       console.log(student);
       // this.phoneStatus = true;
@@ -426,10 +453,18 @@ export default {
       // this.studentInfo = student;
       // this.studentId = student.studentId;
       // this.queryStduentpar(this.studentId);
-      this.$toast('审核通过')
+      let params = {
+        parentid: student.parentid
+      };
+      this.submitApproved(params);
     },
-
-
+    async submitApproved(params = {}) {
+      let res = await service.submitApproved(params);
+      if (res.errorCode === 0) {
+        this.parentList(this.studentid);
+        this.$toast("审核通过");
+      }
+    },
     //查询学生家长的关系
     async queryStduentpar(studentId) {
       let res = await service.queryStduentpar({ studentId });
@@ -473,7 +508,8 @@ export default {
     }
   },
   mounted() {
-    this.queryClassNameList(this.teacherId);
+    // this.queryClassNameList(this.teacherId);
+    this.parentList(this.studentid);
   }
 };
 </script>
@@ -543,7 +579,7 @@ export default {
   font-size: 28px;
   color: #ccc;
 }
-.no-radius{
-  font-size:30px;
+.no-radius {
+  font-size: 30px;
 }
 </style>

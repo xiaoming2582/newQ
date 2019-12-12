@@ -15,7 +15,7 @@
               <input
                 disabled="disabled"
                 class="input"
-                placeholder="请输入学生姓名"
+                placeholder="请输入您与学生的关系"
                 maxlength="10"
                 v-model="form.studentName"
               />
@@ -43,7 +43,7 @@
               <input
                 disabled="disabled"
                 class="input"
-                placeholder="请输入学生姓名"
+                placeholder="请输入您的手机号码"
                 maxlength="10"
                 v-model="form.birthday"
               />
@@ -88,13 +88,13 @@ export default {
       },
       querys: {
         openId: this.$store.state.user.info.openId,
-        tel: this.$route.query.tel,
-        studentId: this.$route.query.studentId
+        tel: this.$route.query.phone,
+        studentId: this.$route.query.relation
       },
       form: {
-        studentName: "",
+        studentName: this.$route.query.relation,
         sex: "",
-        birthday: "",
+        birthday: this.$route.query.phone,
         site: ""
       },
       classList: [],
@@ -104,42 +104,57 @@ export default {
   },
   methods: {
     handleDel() {
-      let { studentId } = this.form;
-      if (studentId) {
+      let parentid = this.$route.query.parentid;
+      if (parentid) {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "确定要移除学生吗？"
+            message: "确定要拒绝该家长吗？"
           })
           .then(() => {
-            this.studentDelete({
-              studentId,
-              openId: this.$store.state.user.info.openId,
-              classId: this.$route.query.classId,
-              tel: this.querys.tel
-            });
+            let params={
+              parentid:parentid
+            }
+            this.submitUnapproved(params);
           })
           .catch(() => {});
       }
     },
+      //拒绝
+    async submitUnapproved(params = {}) {
+      let res = await service.submitUnapproved(params);
+      if (res.errorCode === 0) {
+        this.$router.go(-1);
+      }
+    },
     handleSubmit() {
-      let { studentName, classId, linkMan } = this.form;
-      if (studentName == "" || !studentName.length) {
-        this.$toast("请输入学生姓名");
-        return false;
+      // let { studentName, classId, linkMan } = this.form;
+      // if (studentName == "" || !studentName.length) {
+      //   this.$toast("请输入学生姓名");
+      //   return false;
+      // }
+      // if (!classId) {
+      //   this.$toast("请选择学生所在班级");
+      //   return false;
+      // }
+      // for (let i = 0; i < linkMan.length; i++) {
+      //   let tel = linkMan[i].tel;
+      //   if (!isPhone(tel)) {
+      //     this.$toast("请正确填写手机号");
+      //     return;
+      //   }
+      // }
+      let params = {
+        parentid: this.$route.query.parentid
+      };
+      this.submitApproved(params);
+    },
+    //通过
+    async submitApproved(params = {}) {
+      let res = await service.submitApproved(params);
+      if (res.errorCode === 0) {
+        this.$router.go(-1);
       }
-      if (!classId) {
-        this.$toast("请选择学生所在班级");
-        return false;
-      }
-      for (let i = 0; i < linkMan.length; i++) {
-        let tel = linkMan[i].tel;
-        if (!isPhone(tel)) {
-          this.$toast("请正确填写手机号");
-          return;
-        }
-      }
-      this.studentUpdate(this.form);
     },
     //学生信息查询
     // async studentInfoQuery(params = {}) {

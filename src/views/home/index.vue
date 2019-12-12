@@ -28,7 +28,7 @@
       <!-- <div class="experience flex" v-if="experience == 1"> -->
       <!-- <div class="item text-left entranceGrade" v-if="part == 2"> -->
       <div class="experience flex">
-        <!-- <div class="item text-left entranceGrade">
+        <div class="item text-left entranceGrade">
           <van-button
             type="danger"
             size="small"
@@ -38,8 +38,8 @@
           <van-button type="danger" size="small" @click="entranceGrade"
             >进入班级</van-button
           >
-        </div> -->
-        <div class="item loginBtn">
+        </div>
+        <!-- <div class="item loginBtn">
           <div class="item text-left">
             <van-button @click="findGrade" type="danger" size="small"
               >查找班级</van-button
@@ -50,7 +50,7 @@
               >进入班级</van-button
             >
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- 家长端-进入班级 -->
       <van-popup

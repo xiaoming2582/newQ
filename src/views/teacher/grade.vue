@@ -4,7 +4,18 @@
       <span class="longString"></span><span class="gradeTitle">班级列表</span>
     </div>
     <div class="main">
-      <div class="lis" @click="auditList">
+      <div class="lis" @click="auditList" v-for="(item,index) in arr" :key="index">
+        <div class="left">
+          <div class="grade">{{item.classname}}</div>
+          <div class="gradeNum">
+            关联学生：{{item.studentnum}}人
+          </div>
+        </div>
+        <div class="right">
+          <van-icon name="arrow" color="#CCCCCC" />
+        </div>
+      </div>
+      <!-- <div class="lis">
         <div class="left">
           <div class="grade">大一班</div>
           <div class="gradeNum">
@@ -14,33 +25,33 @@
         <div class="right">
           <van-icon name="arrow" color="#CCCCCC" />
         </div>
-      </div>
-      <div class="lis">
-        <div class="left">
-          <div class="grade">大一班</div>
-          <div class="gradeNum">
-            关联学生：30人
-          </div>
-        </div>
-        <div class="right">
-          <van-icon name="arrow" color="#CCCCCC" />
-        </div>
-      </div>
+      </div> -->
     </div>
     <div class="footer" @click="newGrade">新建班级</div>
   </div>
 </template>
 
 <script>
+import service from "@/api";
 export default {
   components: {},
   props: {},
   data() {
-    return {};
+    return {
+        // teacherid: this.$store.state.user.info.teacherId
+      teacherid:2,
+      arr:[]
+    };
   },
   watch: {},
   computed: {},
   methods: {
+    async queryTeacherClassDetailList(teacherid) {
+      let res = await service.queryTeacherClassDetailList({ teacherid });
+      if (res.errorCode === 0) {
+        this.arr = res.data;
+      }
+    },
     auditList() {
       this.$router.push({
         path: "/teacher"
@@ -53,7 +64,9 @@ export default {
     }
   },
   created() {},
-  mounted() {}
+  mounted() {
+     this.queryTeacherClassDetailList(this.teacherid)
+  }
 };
 </script>
 <style lang="less" scoped>

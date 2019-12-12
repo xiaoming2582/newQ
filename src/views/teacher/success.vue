@@ -38,13 +38,15 @@
 <script>
 import wxapi from "@/config/wxapi";
 import { API_ROOT } from "@/config/isdev";
+import service from "@/api";
+import Cookies from "js-cookie";
 export default {
   name: "teacherSuccess",
   data() {
     return {
       visibility: false,
-      classId: this.$route.query.classId,
-      gradeNum: 2345
+      classId: this.$route.query.classid,
+      gradeNum: this.$route.query.classcode
     };
   },
   methods: {
@@ -54,9 +56,26 @@ export default {
       });
     },
     EnterTheClass() {
-      this.$router.replace({
-        path: "/home"
-      });
+      let params = {
+        openid: this.$store.state.user.info.openId,
+        roletype: this.$store.state.user.info.roleType
+      };
+      this.getUserAccountDetail(params);
+    },
+    //获取用户信息
+    async getUserAccountDetail(params = {}) {
+      let res = await service.getUserAccountDetail(params);
+      if (res.errorCode === 0) {
+        let _cookie = Cookies.getJSON("info");
+        let obj = Object.assign({}, _cookie, res.data);
+        this.$store.dispatch("user/setInfo", obj).then(data => {
+          if (data.success === "ok") {
+            this.$router.replace({
+              path: "/home"
+            });
+          }
+        });
+      }
     },
     wxRegCallback() {
       //用于微信JS-SDK回调

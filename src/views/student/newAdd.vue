@@ -407,7 +407,7 @@ export default {
         this.$toast("请输入验证码");
         return false;
       }
-       if (relation == "") {
+      if (relation == "") {
         this.$toast("请选择学生与家长的关系");
         return false;
       }
@@ -415,27 +415,77 @@ export default {
       //for
       for (let i = 0; i < this.linkMan.length; i++) {
         let tel = this.linkMan[i].tel;
+        console.log(tel);
         if (!isPhone(tel)) {
           this.$toast("请正确填写手机号");
           return;
         }
       }
-      let obj = Object.assign({}, this.form);
-      console.log(obj);
+      // let obj = Object.assign({}, this.form);
+      // console.log(obj);
       // return false;
       // this.studentAdd(obj);
       // this.queryStudentSame(obj);
-      if (this.whetherTel) {
-        this.$router.push({
-          path: "/home"
-        });
-      } else {
-        this.$router.push({
-          path: "/searchSchool/submitSucceed"
+      // if (this.whetherTel) {
+      //   this.$router.push({
+      //     path: "/home"
+      //   });
+      // } else {
+      //   this.$router.push({
+      //     path: "/searchSchool/submitSucceed"
+      //   });
+      // }
+      let params = {
+        classid: 4,
+        // classid:this.$route.query.classid,
+        // openid:this.$route.query.openid,
+        openid: "oCjqXxOBka7ksyAh9CDLvlacEOxY",
+        name: this.form.studentName,
+        gender: this.form.sex,
+        birthday: this.form.dateOfBirth,
+        address: this.form.familySite,
+        phone: this.form.tel,
+        relation: this.form.relation,
+        otherparentjson: this.linkMan
+      };
+      this.teacherInvitationNewStudentToClass(params);
+    },
+    async teacherInvitationNewStudentToClass(params = {}) {
+      let res = service.teacherInvitationNewStudentToClass(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$router.push({
+            path: "/searchSchool/submitSucceed",
+            query: {
+              flag: 1
+            }
+          });
+        }
+      } else if (res.errorCode === -1) {
+        if (res.errorMsg === "老师已存在该班级") {
+          let params = {
+            openid: this.$route.query.openid,
+            roletype: 2
+          };
+          this.getUserAccountDetail(params);
+        }
+      }
+    },
+    //获取当前用户详细信息
+    async getUserAccountDetail(params = {}) {
+      let res = await service.getUserAccountDetail(params);
+      if (res.errorCode === 0) {
+        let _cookie = Cookies.getJSON("info");
+        let obj = Object.assign({}, _cookie, res.data);
+        this.$store.dispatch("user/setInfo", obj).then(data => {
+          if (data.success === "ok") {
+            this.$router.replace({
+              path: "/home"
+            });
+          }
         });
       }
     },
-
     //  查询学生是否已录入
     async queryStudentSame(obj) {
       console.log(obj);
@@ -510,7 +560,7 @@ export default {
       let res = await service.queryTeacherClass(params);
       if (res.errorCode === 0) {
         this.classList = res.data;
-        this.form.classId = this.classList[0].classId;
+        // this.form.classId = this.classList[0].classId;
       }
     }
   },

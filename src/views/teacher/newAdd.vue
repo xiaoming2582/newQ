@@ -174,14 +174,59 @@ export default {
         this.$toast("请填写手机验证码");
         return false;
       }
-
-      if (this.whetherTel) {
-        this.$router.push({
-          path: "/home"
-        });
-      } else {
-        this.$router.push({
-          path: "/searchSchool/submitSucceed"
+      let params = {
+        // classid:4,
+        classid:this.$route.query.classid,
+        name: this.form.teacherName,
+        gender: this.form.sex,
+        phone: this.form.tel,
+        openid: this.$route.query.openid,
+      };
+      this.teacherInvitationNewTeacherToClass(params);
+      // if (this.whetherTel) {
+      //   this.$router.push({
+      //     path: "/home"
+      //   });
+      // } else {
+      //   this.$router.push({
+      //     path: "/searchSchool/submitSucceed"
+      //   });
+      // }
+    },
+    //添加
+    async teacherInvitationNewTeacherToClass(params = {}) {
+      let res = await service.teacherInvitationNewTeacherToClass(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$router.push({
+            path: "/searchSchool/submitSucceed",
+            query:{
+              flag:1
+            }
+          });
+        }
+      } else if (res.errorCode === -1) {
+        if (res.errorMsg === "老师已存在该班级") {
+          let params = {
+            openid: this.$route.query.openid,
+            roletype: 2
+          };
+          this.getUserAccountDetail(params)
+        }
+      }
+    },
+    //获取当前用户详细信息
+    async getUserAccountDetail(params = {}) {
+      let res = await service.getUserAccountDetail(params);
+      if (res.errorCode === 0) {
+        let _cookie = Cookies.getJSON("info");
+        let obj = Object.assign({}, _cookie, res.data);
+        this.$store.dispatch("user/setInfo", obj).then(data => {
+          if (data.success === "ok") {
+            this.$router.replace({
+              path: "/home"
+            });
+          }
         });
       }
     },

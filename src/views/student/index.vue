@@ -40,7 +40,7 @@
       <div class="cells">
         <div
           class="cell min-h120"
-          v-for="(student, index) in studentListed"
+          v-for="(student, index) in stayAudit"
           :key="index"
         >
           <!-- <div class="num" v-if="studentListed.length < 9">
@@ -48,8 +48,8 @@
             </div>
             <div class="num" v-else>{{ index + 1 }}</div> -->
           <div class="cell-hd">
-            <template v-if="student.photo">
-              <img :src="student.photo" width="35" height="35" radius="50" />
+            <template v-if="student.headimg">
+              <img :src="student.headimg" width="35" height="35" radius="50" />
             </template>
             <template v-else>
               <img
@@ -61,7 +61,7 @@
             </template>
           </div>
           <div class="cell-bd pl-20">
-            <p>{{ student.studentName }}</p>
+            <p>{{ student.studentname }}</p>
           </div>
           <div class="cell-ft flex">
             <div class="pf" @click="details(student)">
@@ -118,7 +118,8 @@
       </div>-->
 
       <!-- 修改学生管理列表2019106 -->
-      <div v-if="studentStatus">
+       <!-- <div v-if="studentStatus"> -->
+      <div>
         <div class="cells-title2 titleHZM">
           <span class="longString"></span
           ><span class="gradeTitle">已加入学生列表(4)</span>
@@ -126,7 +127,7 @@
         <div class="cells">
           <div
             class="cell min-h120"
-            v-for="(student, index) in studentListed"
+            v-for="(student, index) in alreadyAudit"
             :key="index"
           >
             <!-- <div class="num" v-if="studentListed.length < 9">
@@ -134,8 +135,8 @@
             </div>
             <div class="num" v-else>{{ index + 1 }}</div> -->
             <div class="cell-hd">
-              <template v-if="student.photo">
-                <img :src="student.photo" width="35" height="35" radius="50" />
+              <template v-if="student.headimg">
+                <img :src="student.headimg" width="35" height="35" radius="50" />
               </template>
               <template v-else>
                 <img
@@ -147,7 +148,7 @@
               </template>
             </div>
             <div class="cell-bd pl-20">
-              <p>{{ student.studentName }}</p>
+              <p>{{ student.studentname }}</p>
             </div>
             <div class="cell-ft flex">
               <div class="pf" @click="handlePhone(student)">
@@ -172,7 +173,7 @@
         <div class="cells">
           <div
             class="cell min-h120"
-            v-for="(student, index) in studentListed"
+            v-for="(student, index) in notAudit"
             :key="index"
           >
             <!-- <div class="num" v-if="studentListed.length < 9">
@@ -180,8 +181,8 @@
             </div>
             <div class="num" v-else>{{ index + 1 }}</div> -->
             <div class="cell-hd">
-              <template v-if="student.photo">
-                <img :src="student.photo" width="35" height="35" radius="50" />
+              <template v-if="student.headimg">
+                <img :src="student.headimg" width="35" height="35" radius="50" />
               </template>
               <template v-else>
                 <img
@@ -193,7 +194,7 @@
               </template>
             </div>
             <div class="cell-bd pl-20">
-              <p>{{ student.studentName }}</p>
+              <p>{{ student.studentname }}</p>
             </div>
             <div class="cell-ft flex">
               <div class="pf" @click="handlePhone(student)">
@@ -379,6 +380,9 @@ export default {
       // 20191006
       studentListed: [],
       studentListing: [],
+      stayAudit:[],
+      alreadyAudit:[],
+      notAudit:[],
       studentStatus: false,
       phoneStatus: false,
       status: 1,
@@ -388,7 +392,8 @@ export default {
         phone: []
       },
       studentInfo: {},
-      title: ""
+      title: "",
+      newClassid:this.$route.query.classid,
     };
   },
   computed: {
@@ -599,10 +604,20 @@ export default {
           wxapi.wxRegister(this.wxRegCallback);
         }
       }
+    },
+    //列表
+    async queryClassStudentList(classid) {
+      let res = await service.queryClassStudentList({ classid });
+      if(res.errorCode===0){
+        this.stayAudit=res.data.waiting;
+        this.alreadyAudit=res.data.join;
+        this.notAudit=res.data.unjoin;
+      }
     }
   },
   mounted() {
-    this.queryClassNameList(this.teacherId);
+    // this.queryClassNameList(this.teacherId);
+    this.queryClassStudentList(this.newClassid)
   }
 };
 </script>

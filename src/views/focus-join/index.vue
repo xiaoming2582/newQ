@@ -116,7 +116,7 @@
           </div>
           <div class="cell cell-select cell-select-after">
             <div class="cell-hd">
-              <label for class="label">relation</label>
+              <label for class="label">您与孩子的关系</label>
             </div>
             <div class="cell-bd">
               <select class="select" name dir="rtl" v-model="form.relation">
@@ -223,7 +223,7 @@ export default {
             }
           }, 1000);
         });
-        this.telVeriftCode(this.form.tel)
+        this.telVeriftCode(this.form.tel);
       } else {
         this.$toast("请正确填写手机号");
       }
@@ -267,27 +267,28 @@ export default {
       return this.form.linkMan.splice(index, 1);
     },
     handleSubmit() {
-      let { studentName, sex, dateOfBirth,code,relation,tel } = this.form;
+      let { studentName, sex, dateOfBirth, code, relation, tel } = this.form;
       if (studentName == "") {
         this.$toast("请输入学生姓名");
         return false;
       }
-       if (sex == "") {
+      if (sex == "") {
         this.$toast("请选择性别");
         return false;
       }
-       if (dateOfBirth == "") {
+      if (dateOfBirth == "") {
         this.$toast("请选择出生日期");
         return false;
       }
-       if (tel == "") {
+      if (tel == "") {
         this.$toast("请输入您的手机号码");
         return false;
       }
-       if (code == "") {
+      if (code == "") {
         this.$toast("请输入验证码");
         return false;
-      } if (relation == "") {
+      }
+      if (relation == "") {
         this.$toast("请选择学生与家长的关系");
         return false;
       }
@@ -297,17 +298,51 @@ export default {
       // // return false;
       // // this.studentAdd(obj);
       // this.queryStudentSame(obj);
-      if (this.whetherTel) {
-        this.$router.push({
-          path: "/single"
-        });
-      } else {
-        this.$router.push({
-          path: "/searchSchool/submitSucceed"
+      // if (this.whetherTel) {
+      //   this.$router.push({
+      //     path: "/single"
+      //   });
+      // } else {
+      //   this.$router.push({
+      //     path: "/searchSchool/submitSucceed"
+      //   });
+      // }
+      let params = {
+        // studentid: 2,
+        studentid: this.$route.query.studentid,
+        relation: this.form.relation,
+        phone: this.form.tel,
+        openid: this.$route.query.openid
+        // openid: "oCjqXxOBka7ksyAh9CDLvlacEOxY"
+      };
+      this.parentInvitationNewParentToStudent(params);
+    },
+    //提交
+    async parentInvitationNewParentToStudent(params = {}) {
+      let res = await service.parentInvitationNewParentToStudent(params);
+      if (res.errorCode === 0) {
+        let params = {
+          openid: this.$route.query.openid,
+          roletype: 2
+        };
+        this.getUserAccountDetail(params);
+      }
+    },
+    //获取当前用户详细信息
+    async getUserAccountDetail(params = {}) {
+      let res = await service.getUserAccountDetail(params);
+      if (res.errorCode === 0) {
+        let _cookie = Cookies.getJSON("info");
+        let obj = Object.assign({}, _cookie, res.data);
+        this.$store.dispatch("user/setInfo", obj).then(data => {
+          if (data.success === "ok") {
+            this.$router.replace({
+              path: "/home"
+            });
+          }
         });
       }
     },
-
     //  查询学生是否已录入
     async queryStudentSame(obj) {
       console.log(obj);
@@ -382,7 +417,7 @@ export default {
       let res = await service.queryTeacherClass(params);
       if (res.errorCode === 0) {
         this.classList = res.data;
-        this.form.classId = this.classList[0].classId;
+        // this.form.classId = this.classList[0].classId;
       }
     }
   },
