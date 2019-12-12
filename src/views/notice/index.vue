@@ -14,11 +14,7 @@
       <van-popup v-model="popupShow" position="bottom">
         <div class="popup-class">
           <div class="cells">
-            <div
-              class="cell popup-box"
-              v-for="(p, index) in classList"
-              :key="index"
-            >
+            <div class="cell popup-box" v-for="(p, index) in classList" :key="index">
               <div class="cell-hd">
                 <img src="@/assets/kong.png" width="54" height="54" />
               </div>
@@ -68,13 +64,13 @@
                 <div class="figure-info">
                   <figcaption style="marginBottom:12px" class="text-ellipsis">
                     <i v-if="!notice.status" style="width:6px;height:6px;"></i>
-                    <span size-18 style="font-weight:600">{{
+                    <span size-18 style="font-weight:600">
+                      {{
                       notice.title
-                    }}</span>
+                      }}
+                    </span>
                   </figcaption>
-                  <p size-15 class="text-ellipsis">
-                    {{ notice.textContent | brReplace }}
-                  </p>
+                  <p size-15 class="text-ellipsis">{{ notice.textContent | brReplace }}</p>
                   <div class="metedata flex">
                     <!-- <span class="name">{{ notice.name }}</span> -->
                     <time class="time">{{ notice.postTime }}</time>
@@ -84,25 +80,17 @@
               <div class="figure-ft">
                 <div class="figure-total">
                   <!-- <span>已读{{ notice.classReadCount }}人</span>
-                  <span v-if="roleType == 1 || roleType == 4">共{{ notice.totalCount }}人</span> -->
+                  <span v-if="roleType == 1 || roleType == 4">共{{ notice.totalCount }}人</span>-->
                   <div class="figure-icon">
                     <div class="user">
                       <div class="userImg">
-                        <img v-if="notice.photo" :src="notice.photo" alt="" />
-                        <img
-                          v-else
-                          src="@/assets/child-default@2x.png"
-                          alt=""
-                        />
+                        <img v-if="notice.photo" :src="notice.photo" alt />
+                        <img v-else src="@/assets/child-default@2x.png" alt />
                       </div>
                       <span class="name">{{ notice.name }}</span>
                     </div>
                     <div class="readNum">
-                      <van-icon
-                        name="eye-o"
-                        size="16px"
-                        color="#999999"
-                      ></van-icon>
+                      <van-icon name="eye-o" size="16px" color="#999999"></van-icon>
                       <span>{{ notice.classReadCount }}</span>
                     </div>
                   </div>

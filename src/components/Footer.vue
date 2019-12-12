@@ -11,6 +11,11 @@
       </router-link>
     </div>
     <div class="item">
+      <router-link to="/smallWisdom/cardList">
+        <div>小Q智慧</div>
+      </router-link>
+    </div>
+    <div class="item">
       <router-link to="/user">
         <div>个人中心</div>
       </router-link>

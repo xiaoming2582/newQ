@@ -31,6 +31,8 @@ import * as data from './module/data';
 import * as alarmClock from './module/alarm-clock';
 
 import * as home from './module/home';
+
+import * as cartList from './module/cartList';
 export default {
   ...album,
   ...clock,
@@ -62,5 +64,6 @@ export default {
   ...image,
   ...data,
   ...alarmClock,
-  ...home
+  ...home,
+  ...cartList
 }

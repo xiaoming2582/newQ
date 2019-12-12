@@ -52,6 +52,8 @@ import specialColumn from './specialColumn';
 import searchSchool from './searchSchool';
 import patriarchManage from './patriarchManage';
 import bindingList from './bindingList';
+import smallWisdom from './smallWisdom';
+
 
 Vue.use(Router);
 
@@ -105,7 +107,8 @@ export const constantRouterMap = [
   ...specialColumn,
   ...searchSchool,
   ...patriarchManage,
-  ...bindingList
+  ...bindingList,
+  ...smallWisdom
 ]
 
 
