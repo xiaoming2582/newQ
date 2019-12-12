@@ -118,7 +118,7 @@
       </div>-->
 
       <!-- 修改学生管理列表2019106 -->
-       <!-- <div v-if="studentStatus"> -->
+      <!-- <div v-if="studentStatus"> -->
       <div>
         <div class="cells-title2 titleHZM">
           <span class="longString"></span
@@ -136,7 +136,12 @@
             <div class="num" v-else>{{ index + 1 }}</div> -->
             <div class="cell-hd">
               <template v-if="student.headimg">
-                <img :src="student.headimg" width="35" height="35" radius="50" />
+                <img
+                  :src="student.headimg"
+                  width="35"
+                  height="35"
+                  radius="50"
+                />
               </template>
               <template v-else>
                 <img
@@ -182,7 +187,12 @@
             <div class="num" v-else>{{ index + 1 }}</div> -->
             <div class="cell-hd">
               <template v-if="student.headimg">
-                <img :src="student.headimg" width="35" height="35" radius="50" />
+                <img
+                  :src="student.headimg"
+                  width="35"
+                  height="35"
+                  radius="50"
+                />
               </template>
               <template v-else>
                 <img
@@ -380,9 +390,9 @@ export default {
       // 20191006
       studentListed: [],
       studentListing: [],
-      stayAudit:[],
-      alreadyAudit:[],
-      notAudit:[],
+      stayAudit: [],
+      alreadyAudit: [],
+      notAudit: [],
       studentStatus: false,
       phoneStatus: false,
       status: 1,
@@ -393,7 +403,7 @@ export default {
       },
       studentInfo: {},
       title: "",
-      newClassid:this.$route.query.classid,
+      newClassid: this.$route.query.classid
     };
   },
   computed: {
@@ -473,13 +483,12 @@ export default {
       });
     },
     details(student) {
+      console.log(student);
       this.$router.push({
         path: `/student/audit`,
         query: {
-          tel: student.tel,
-          studentId: student.studentId,
-          classId: student.classId,
-          openDirection: this.openDirection
+          studentid: student.studentid,
+          classid: this.$route.query.classid
         }
       });
     },
@@ -489,8 +498,24 @@ export default {
           title: "提示",
           message: "您确定要删除该学生吗？"
         })
-        .then(() => {})
+        .then(() => {
+          let params = {
+            studentid: student.studentid,
+            classid: this.$route.query.classid
+          };
+          this.auditJoinInClassStudentUnapproved(params);
+        })
         .catch(() => {});
+    },
+    //删除
+    async auditJoinInClassStudentUnapproved(params = {}) {
+      let res = await service.auditJoinInClassStudentUnapproved(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$toast("删除成功");
+          this.queryClassStudentList(this.newClassid);
+        }
+      }
     },
     handleJumpRoute() {
       this.$router.push({
@@ -527,9 +552,10 @@ export default {
     },
     // 查询学生家长电话(20191006)
     async handlePhone(student) {
+      console.log(student);
       this.status = 1;
       let data = {
-        studentId: student.studentId,
+        studentId: student.studentid,
         openId: this.$store.state.user.info.openId
       };
       let res = await service.queryStudentQP(data);
@@ -552,18 +578,25 @@ export default {
       this.queryStduentpar(this.studentId);
     },
 
-      //通过
+    //通过
     pass(student) {
-      console.log(student);
-      // this.phoneStatus = true;
-      // this.status = 2;
-      // this.parentInfo.name = student.studentName;
-      // this.studentInfo = student;
-      // this.studentId = student.studentId;
-      // this.queryStduentpar(this.studentId);
-      this.$toast('审核通过')
+      // console.log(student);
+      let params = {
+        studentid: student.studentid,
+        classid: this.$route.query.classid
+      };
+      this.auditJoinInClassStudent(params);
     },
 
+    async auditJoinInClassStudent(params = {}) {
+      let res = await service.auditJoinInClassStudent(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$toast("审核通过");
+          this.queryClassStudentList(this.newClassid);
+        }
+      }
+    },
     //查询学生家长的关系
     async queryStduentpar(studentId) {
       let res = await service.queryStduentpar({ studentId });
@@ -608,16 +641,16 @@ export default {
     //列表
     async queryClassStudentList(classid) {
       let res = await service.queryClassStudentList({ classid });
-      if(res.errorCode===0){
-        this.stayAudit=res.data.waiting;
-        this.alreadyAudit=res.data.join;
-        this.notAudit=res.data.unjoin;
+      if (res.errorCode === 0) {
+        this.stayAudit = res.data.waiting;
+        this.alreadyAudit = res.data.join;
+        this.notAudit = res.data.unjoin;
       }
     }
   },
   mounted() {
     // this.queryClassNameList(this.teacherId);
-    this.queryClassStudentList(this.newClassid)
+    this.queryClassStudentList(this.newClassid);
   }
 };
 </script>

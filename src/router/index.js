@@ -54,6 +54,7 @@ import patriarchManage from './patriarchManage';
 import bindingList from './bindingList';
 import smallWisdom from './smallWisdom';
 
+import sharePage from './sharePage';
 
 Vue.use(Router);
 
@@ -108,7 +109,8 @@ export const constantRouterMap = [
   ...searchSchool,
   ...patriarchManage,
   ...bindingList,
-  ...smallWisdom
+  ...smallWisdom,
+  ...sharePage
 ]
 
 

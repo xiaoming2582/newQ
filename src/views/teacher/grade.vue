@@ -4,11 +4,11 @@
       <span class="longString"></span><span class="gradeTitle">班级列表</span>
     </div>
     <div class="main">
-      <div class="lis" @click="auditList" v-for="(item,index) in arr" :key="index">
+      <div class="lis" @click="auditList(item)" v-for="(item,index) in arr" :key="index">
         <div class="left">
           <div class="grade">{{item.classname}}</div>
           <div class="gradeNum">
-            关联学生：{{item.studentnum}}人
+            关联学生：{{item.number}}人
           </div>
         </div>
         <div class="right">
@@ -39,22 +39,25 @@ export default {
   data() {
     return {
         // teacherid: this.$store.state.user.info.teacherId
-      teacherid:2,
+       openid:this.$store.state.user.info.openId,
       arr:[]
     };
   },
   watch: {},
   computed: {},
   methods: {
-    async queryTeacherClassDetailList(teacherid) {
-      let res = await service.queryTeacherClassDetailList({ teacherid });
+    async queryTeacherClassDetailListByTeacher(openid) {
+      let res = await service.queryTeacherClassDetailListByTeacher({ openid });
       if (res.errorCode === 0) {
         this.arr = res.data;
       }
     },
-    auditList() {
+    auditList(item) {
       this.$router.push({
-        path: "/teacher"
+        path: "/teacher",
+        query:{
+          classid:item.classid
+        }
       });
     },
     newGrade() {
@@ -65,7 +68,7 @@ export default {
   },
   created() {},
   mounted() {
-     this.queryTeacherClassDetailList(this.teacherid)
+     this.queryTeacherClassDetailListByTeacher(this.openid)
   }
 };
 </script>

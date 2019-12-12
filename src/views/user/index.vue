@@ -55,10 +55,7 @@
             v-if="roleList.length == 2"
             @click.stop="jumpRoleSelect"
           > -->
-           <div
-            class="switch-role"
-            @click.stop="jumpRoleSelect"
-          >
+          <div class="switch-role" @click.stop="jumpRoleSelect">
             <van-icon name="replay" size="16px"></van-icon>
             <span>切换角色</span>
           </div>
@@ -107,7 +104,7 @@
           size="large"
           title="邀请亲友关注"
           is-link
-          @click="visibility = true"
+          @click="inviteKith"
           v-if="studentId != 0"
         >
           <template slot="icon">
@@ -364,6 +361,14 @@ export default {
     })
   },
   methods: {
+    inviteKith() {
+      this.$router.push({
+        path: "/sharePage",
+        query: {
+          flag: 3
+        }
+      });
+    },
     handleInitSwitch() {
       return (this.switched = this.isOpen === "true" ? true : false);
     },

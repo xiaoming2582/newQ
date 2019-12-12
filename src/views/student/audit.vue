@@ -43,7 +43,6 @@
               <input
                 disabled="disabled"
                 class="input"
-                placeholder="请输入学生姓名"
                 maxlength="10"
                 v-model="form.birthday"
               />
@@ -54,12 +53,7 @@
               <label class="label">家庭地址</label>
             </div>
             <div class="cell-bd">
-              <input
-                disabled="disabled"
-                class="input"
-                placeholder="请输入学生姓名"
-                v-model="form.site"
-              />
+              <input disabled="disabled" class="input" v-model="form.site" />
             </div>
           </div>
         </div>
@@ -83,26 +77,11 @@
                 type="number"
                 class="input"
                 pattern="[0-9]*"
-                placeholder="请输入手机号"
-                v-model="link.tel"
+                v-model="link.phone"
               />
             </div>
           </div>
-          <!-- <div class="cell cell-select cell-select-after">
-            <div class="cell-hd">
-              <label for class="label">家长与学生的关系</label>
-            </div>
-            <div class="cell-bd">
-              <select class="select" name dir="rtl" v-model="link.relation">
-                <option
-                  :value="option.id"
-                  v-for="(option, index) in relationList"
-                  :key="index"
-                  >{{ option.name }}</option
-                >
-              </select>
-            </div>
-          </div> -->
+
           <div class="cell">
             <div class="cell-hd">
               <label class="label">家长与学生的关系</label>
@@ -110,11 +89,9 @@
             <div class="cell-bd">
               <input
                 disabled="disabled"
-                type="number"
                 class="input"
                 pattern="[0-9]*"
-                placeholder="请输入手机号"
-                v-model="link.tel"
+                v-model="link.relation"
               />
             </div>
           </div>
@@ -158,57 +135,76 @@ export default {
       querys: {
         openId: this.$store.state.user.info.openId,
         tel: this.$route.query.tel,
-        studentId: this.$route.query.studentId
+        studentId: this.$route.query.studentid
       },
       form: {
         studentName: "",
         sex: "",
         birthday: "",
-        site: ""
+        site: "",
+        linkMan: []
       },
       classList: [],
       studentList: [],
-      deleteButton: false //控制删除按钮的出现
+      deleteButton: false, //控制删除按钮的出现
+      studentid: this.$route.query.studentid
     };
   },
   methods: {
     handleDel() {
-      let { studentId } = this.form;
-      if (studentId) {
+      let studentid = this.$route.query.studentid;
+      if (studentid) {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "确定要移除学生吗？"
+            message: "确定要拒绝该学生吗？"
           })
           .then(() => {
-            this.studentDelete({
-              studentId,
-              openId: this.$store.state.user.info.openId,
-              classId: this.$route.query.classId,
-              tel: this.querys.tel
-            });
+            let params = {
+              studentid: this.$route.query.studentid,
+              classid: this.$route.query.classid
+            };
+            this.auditJoinInClassStudentUnapproved(params);
           })
           .catch(() => {});
       }
     },
-    handleSubmit() {
-      let { studentName, classId, linkMan } = this.form;
-      if (studentName == "" || !studentName.length) {
-        this.$toast("请输入学生姓名");
-        return false;
-      }
-      if (!classId) {
-        this.$toast("请选择学生所在班级");
-        return false;
-      }
-      for (let i = 0; i < linkMan.length; i++) {
-        let tel = linkMan[i].tel;
-        if (!isPhone(tel)) {
-          this.$toast("请正确填写手机号");
-          return;
+    //拒绝
+    async auditJoinInClassStudentUnapproved(params = {}) {
+      let res = await service.auditJoinInClassStudentUnapproved(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$router.go(-1);
         }
       }
-      this.studentUpdate(this.form);
+    },
+    handleSubmit() {
+      let params = {
+        studentid: this.$route.query.studentid,
+        classid: this.$route.query.classid
+      };
+      this.auditJoinInClassStudent(params);
+    },
+    //通过
+    async auditJoinInClassStudent(params = {}) {
+      let res = await service.auditJoinInClassStudent(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$router.go(-1);
+        }
+      }
+    },
+    //查询学生信息详情
+    async queryStudentDetail(studentid) {
+      let res = await service.queryStudentDetail({ studentid });
+      if (res.errorCode === 0) {
+        this.form.studentName = res.data.name;
+        this.form.birthday = res.data.birthday;
+        this.form.site = res.data.address;
+        this.form.sex = res.data.gender;
+        this.form.linkMan = res.data.arr;
+        // console.log(this.form.linkMan);
+      }
     },
     //学生信息查询
     // async studentInfoQuery(params = {}) {
@@ -268,10 +264,11 @@ export default {
     }
   },
   mounted() {
-    this.queryTeacherClass(this.query);
-    // this.studentInfoQuery(this.querys);
-    // console.log(this.querys);
-    this.queryUpdateStudnetInfo({ studentId: this.querys.studentId });
+    // this.queryTeacherClass(this.query);
+    // // this.studentInfoQuery(this.querys);
+    // // console.log(this.querys);
+    // this.queryUpdateStudnetInfo({ studentId: this.querys.studentId });
+    this.queryStudentDetail(this.studentid);
   }
 };
 </script>

@@ -164,7 +164,7 @@ export function removeRelation(params, config = {
 }
 
 
-//老师审核学生流程
+//老师审核学生流程(班级管理)
 
 //查询班级学生列表
 export function queryClassStudentList(params, config = {
@@ -174,17 +174,85 @@ export function queryClassStudentList(params, config = {
         .then(res => res.data)
         .catch(e => console.log(e));
 }
-
-
-
-//老师管理
-
-
 //查询老师的班级列表
 export function queryTeacherClassDetailList(params, config = {
     showLoading: true
 }) {
-    return ax.post('/qxiao-mp/action/action/mod-xiaojiao/schoolClassManagement/queryTeacherClassDetailList.do', params, config)
+    return ax.post('/qxiao-mp/action/mod-xiaojiao/schoolClassManagement/queryTeacherClassDetailListByClass.do', params, config)
         .then(res => res.data)
         .catch(e => console.log(e));
 }
+
+//查询学生信息详情
+export function queryStudentDetail(params, config = {
+    showLoading: true
+}) {
+    return ax.post('/qxiao-mp/action/mod-xiaojiao/studentManagement/queryStudentDetail.do', params, config)
+        .then(res => res.data)
+        .catch(e => console.log(e));
+}
+
+//班主任审核学生加入班级
+export function auditJoinInClassStudent(params, config = {
+    showLoading: true
+}) {
+    return ax.post('/qxiao-mp/action/mod-xiaojiao/schoolClassManagement/auditJoinInClassStudent.do', params, config)
+        .then(res => res.data)
+        .catch(e => console.log(e));
+}
+//班主任审核不通过学生加入班级
+export function auditJoinInClassStudentUnapproved(params, config = {
+    showLoading: true
+}) {
+    return ax.post('/qxiao-mp/action/mod-xiaojiao/schoolClassManagement/auditJoinInClassStudentUnapproved.do', params, config)
+        .then(res => res.data)
+        .catch(e => console.log(e));
+}
+
+
+
+//老师审核老师流程（老师管理）
+
+
+//查询老师的班级列表
+export function queryTeacherClassDetailListByTeacher(params, config = {
+    showLoading: true
+}) {
+    return ax.post('/qxiao-mp/action/mod-xiaojiao/schoolClassManagement/queryTeacherClassDetailListByTeacher.do', params, config)
+        .then(res => res.data)
+        .catch(e => console.log(e));
+}
+//查询班级老师列表
+export function queryClassTeacherList(params, config = {
+    showLoading: true
+}) {
+    return ax.post('/qxiao-mp/action/mod-xiaojiao/teacherManagement/queryClassTeacherList.do', params, config)
+        .then(res => res.data)
+        .catch(e => console.log(e));
+}
+//查询老师详情信息
+export function getTeacherDetail(params, config = {
+    showLoading: true
+}) {
+    return ax.post('/qxiao-mp/action/mod-xiaojiao/teacherManagement/getTeacherDetail.do', params, config)
+        .then(res => res.data)
+        .catch(e => console.log(e));
+}
+//班主任审核加入班级老师
+export function auditJoinInClassTeacher(params, config = {
+    showLoading: true
+}) {
+    return ax.post('/qxiao-mp/action/mod-xiaojiao/schoolClassManagement/auditJoinInClassTeacher.do', params, config)
+        .then(res => res.data)
+        .catch(e => console.log(e));
+}
+//班主任审核不通过加入班级老师
+export function auditJoinInClassTeacherUnapproved(params, config = {
+    showLoading: true
+}) {
+    return ax.post('/qxiao-mp/action/mod-xiaojiao/schoolClassManagement/auditJoinInClassTeacherUnapproved.do', params, config)
+        .then(res => res.data)
+        .catch(e => console.log(e));
+}
+
+

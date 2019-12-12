@@ -95,7 +95,6 @@ export default {
     return {
       schoolname: this.$route.query.schoolname,
       gradeArr: [],
-      schoolid: this.schoolid,
       haveSchool: -1,
       identicalName: 0, //1出现同名，0没有重名
       identicalNameOff: false,
@@ -203,19 +202,12 @@ export default {
         .then(() => {
           //点击确认按钮后的调用
           let params = {
-            studentid: this.$store.state.user.info.studentid * 1,
+            studentid: this.$store.state.user.info.studentId,
             classid: this.classid,
             openid: this.$store.state.user.info.openId,
-            schoolid: this.schoolid,
+            schoolid: this.$route.query.schoolid 
           };
           this.parentJoinStudentForClass(params);
-          // if (this.identicalName) {
-          //   this.identicalNameOff = true;
-          // } else {
-          //   this.$router.push({
-          //     path: "/searchSchool/submitSucceed"
-          //   });
-          // }
         })
         .catch(() => {
           //点击取消按钮后的调用
@@ -276,8 +268,8 @@ export default {
         if (res.data.result === 1) {
           this.$router.push({
             path: "/searchSchool/submitSucceed",
-            query:{
-              flag:2
+            query: {
+              flag: 2
             }
           });
         }
@@ -286,7 +278,7 @@ export default {
   },
   created() {
     // console.log(this.$route.query.gradeList);
-    // console.log(this.schoolname)
+    console.log(this.$route.query.schoolid)
   },
   mounted() {
     this.gradeList();

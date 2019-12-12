@@ -15,7 +15,7 @@
           <a
             href="javascript:void(0);"
             class="btn btn-large btn-primary"
-            @click="visibility = true"
+            @click="invitePatriarch"
             >邀请家长加入</a
           >
         </div>
@@ -23,7 +23,7 @@
           <a
             href="javascript:void(0);"
             class="btn btn-large btn-primary"
-            @click="visibility = true"
+            @click="inviteTeacher"
             >邀请老师加入</a
           >
         </div>
@@ -50,6 +50,22 @@ export default {
     };
   },
   methods: {
+    invitePatriarch() {
+      this.$router.push({
+        path: "/sharePage",
+        query: {
+          flag: 1
+        }
+      });
+    },
+    inviteTeacher() {
+      this.$router.push({
+        path: "/sharePage",
+        query: {
+          flag: 2
+        }
+      });
+    },
     jump() {
       this.$router.replace({
         path: "/home"
