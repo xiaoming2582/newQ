@@ -40,7 +40,7 @@
       <div class="cells">
         <div
           class="cell min-h120"
-          v-for="(student, index) in studentListed"
+          v-for="(student, index) in stayAudit"
           :key="index"
         >
           <!-- <div class="num" v-if="studentListed.length < 9">
@@ -48,8 +48,8 @@
             </div>
             <div class="num" v-else>{{ index + 1 }}</div> -->
           <div class="cell-hd">
-            <template v-if="student.photo">
-              <img :src="student.photo" width="35" height="35" radius="50" />
+            <template v-if="student.headimg">
+              <img :src="student.headimg" width="35" height="35" radius="50" />
             </template>
             <template v-else>
               <img
@@ -60,8 +60,9 @@
               />
             </template>
           </div>
-          <div class="cell-bd pl-20">
-            <p>{{ student.studentName }}</p>
+          <div class="cell-bd cell-hd pl-20">
+            <p>{{ student.name }}</p>
+            <p class="HzmTle">{{ student.phone }}</p>
           </div>
           <div class="cell-ft flex">
             <div class="pf" @click="details(student)">
@@ -118,7 +119,8 @@
       </div>-->
 
       <!-- 修改学生管理列表2019106 -->
-      <div v-if="studentStatus">
+      <!-- <div v-if="studentStatus"> -->
+      <div>
         <div class="cells-title2 titleHZM">
           <span class="longString"></span
           ><span class="gradeTitle">已加入老师列表(4)</span>
@@ -126,7 +128,7 @@
         <div class="cells">
           <div
             class="cell min-h120"
-            v-for="(student, index) in studentListed"
+            v-for="(student, index) in alreadyAudit"
             :key="index"
           >
             <!-- <div class="num" v-if="studentListed.length < 9">
@@ -134,8 +136,13 @@
             </div>
             <div class="num" v-else>{{ index + 1 }}</div> -->
             <div class="cell-hd">
-              <template v-if="student.photo">
-                <img :src="student.photo" width="35" height="35" radius="50" />
+              <template v-if="student.headimg">
+                <img
+                  :src="student.headimg"
+                  width="35"
+                  height="35"
+                  radius="50"
+                />
               </template>
               <template v-else>
                 <img
@@ -147,7 +154,7 @@
               </template>
             </div>
             <div class="cell-bd pl-20">
-              <p>{{ student.studentName }}</p>
+              <p>{{ student.name }}</p>
             </div>
             <div class="cell-ft flex">
               <div class="pf" @click="handlePhone(student)">
@@ -172,7 +179,7 @@
         <div class="cells">
           <div
             class="cell min-h120"
-            v-for="(student, index) in studentListed"
+            v-for="(student, index) in notAudit"
             :key="index"
           >
             <!-- <div class="num" v-if="studentListed.length < 9">
@@ -180,8 +187,13 @@
             </div>
             <div class="num" v-else>{{ index + 1 }}</div> -->
             <div class="cell-hd">
-              <template v-if="student.photo">
-                <img :src="student.photo" width="35" height="35" radius="50" />
+              <template v-if="student.headimg">
+                <img
+                  :src="student.headimg"
+                  width="35"
+                  height="35"
+                  radius="50"
+                />
               </template>
               <template v-else>
                 <img
@@ -193,7 +205,7 @@
               </template>
             </div>
             <div class="cell-bd pl-20">
-              <p>{{ student.studentName }}</p>
+              <p>{{ student.name }}</p>
             </div>
             <div class="cell-ft flex">
               <div class="pf" @click="handlePhone(student)">
@@ -388,7 +400,11 @@ export default {
         phone: []
       },
       studentInfo: {},
-      title: ""
+      title: "",
+      newClassid: this.$route.query.classid,
+      stayAudit: [],
+      alreadyAudit: [],
+      notAudit: []
     };
   },
   computed: {
@@ -468,13 +484,12 @@ export default {
       });
     },
     details(student) {
+      console.log(student);
       this.$router.push({
         path: `/teacher/audit`,
         query: {
-          tel: student.tel,
-          studentId: student.studentId,
-          classId: student.classId,
-          openDirection: this.openDirection
+          teacherid: student.teacherid,
+          classid: this.$route.query.classid
         }
       });
     },
@@ -484,8 +499,24 @@ export default {
           title: "提示",
           message: "您确定要删除该老师吗？"
         })
-        .then(() => {})
+        .then(() => {
+          let params = {
+            teacherid: student.teacherid,
+            classid: this.$route.query.classid
+          };
+          this.auditJoinInClassTeacherUnapproved(params);
+        })
         .catch(() => {});
+    },
+    //拒绝
+    async auditJoinInClassTeacherUnapproved(params = {}) {
+      let res = await service.auditJoinInClassTeacherUnapproved(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$toast("删除成功");
+          this.queryClassTeacherList(this.newClassid);
+        }
+      }
     },
     handleJumpRoute() {
       this.$router.push({
@@ -549,15 +580,22 @@ export default {
     //通过
     pass(student) {
       console.log(student);
-      // this.phoneStatus = true;
-      // this.status = 2;
-      // this.parentInfo.name = student.studentName;
-      // this.studentInfo = student;
-      // this.studentId = student.studentId;
-      // this.queryStduentpar(this.studentId);
-      this.$toast('审核通过')
+      let params = {
+        teacherid: student.teacherid,
+        classid: this.$route.query.classid
+      };
+      this.auditJoinInClassTeacher(params);
     },
-
+    //通过
+    async auditJoinInClassTeacher(params = {}) {
+      let res = await service.auditJoinInClassTeacher(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$toast("审核通过");
+          this.queryClassTeacherList(this.newClassid);
+        }
+      }
+    },
     //查询学生家长的关系
     async queryStduentpar(studentId) {
       let res = await service.queryStduentpar({ studentId });
@@ -598,10 +636,20 @@ export default {
           wxapi.wxRegister(this.wxRegCallback);
         }
       }
+    },
+    //列表
+    async queryClassTeacherList(classid) {
+      let res = await service.queryClassTeacherList({ classid });
+      if (res.errorCode === 0) {
+        this.stayAudit = res.data.waiting;
+        this.alreadyAudit = res.data.join;
+        this.notAudit = res.data.unjoin;
+      }
     }
   },
   mounted() {
-    this.queryClassNameList(this.teacherId);
+    // this.queryClassNameList(this.teacherId);
+    this.queryClassTeacherList(this.newClassid);
   }
 };
 </script>
@@ -665,5 +713,10 @@ export default {
 // }
 .no-radius {
   font-size: 30px;
+}
+.HzmTle {
+  margin-left: 25px;
+  font-size: 28px;
+  color: #ccc;
 }
 </style>

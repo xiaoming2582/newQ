@@ -25,10 +25,10 @@
         <van-icon name="arrow" size="16px"></van-icon>
       </div>
       <!-- 用户信息 -->
-      <!-- <div class="experience flex" v-if="experience == 1"> -->
-      <!-- <div class="item text-left entranceGrade" v-if="part == 2"> -->
-      <div class="experience flex">
-        <div class="item text-left entranceGrade">
+      <div class="experience flex" v-if="experience == 1">
+      <div class="item text-left entranceGrade" v-if="part == 2">
+      <!-- <div class="experience flex"> -->
+        <!-- <div class="item text-left entranceGrade"> -->
           <van-button
             type="danger"
             size="small"
@@ -39,7 +39,7 @@
             >进入班级</van-button
           >
         </div>
-        <!-- <div class="item loginBtn">
+        <div class="item loginBtn">
           <div class="item text-left">
             <van-button @click="findGrade" type="danger" size="small"
               >查找班级</van-button
@@ -50,7 +50,7 @@
               >进入班级</van-button
             >
           </div>
-        </div> -->
+        </div>
       </div>
       <!-- 家长端-进入班级 -->
       <van-popup
@@ -465,7 +465,9 @@ export default {
             let obj = Object.assign({}, _cookie, res.data);
             this.$store.dispatch("user/setInfo", obj).then(data => {
               if (data.success === "ok") {
-                this.$router.push({ path: "/home" });
+                // this.$router.push({ path: "/home" });
+                console.log(2222)
+                this.$router.go(0)
               }
             });
             break;

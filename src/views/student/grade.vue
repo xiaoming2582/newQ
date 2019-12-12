@@ -8,7 +8,7 @@
         <div class="left">
           <div class="grade">{{item.classname}}</div>
           <div class="gradeNum">
-            关联学生：{{item.studentnum}}人
+            关联学生：{{item.number}}人
           </div>
         </div>
         <div class="right">
@@ -39,15 +39,15 @@ export default {
   data() {
     return {
       // teacherid: this.$store.state.user.info.teacherId
-      teacherid:2,
+      openid:this.$store.state.user.info.openId,
       arr:[]
     };
   },
   watch: {},
   computed: {},
   methods: {
-    async queryTeacherClassDetailList(teacherid) {
-      let res = await service.queryTeacherClassDetailList({ teacherid });
+    async queryTeacherClassDetailList(openid) {
+      let res = await service.queryTeacherClassDetailList({ openid });
       if(res.errorCode===0){
         this.arr=res.data
       }
@@ -69,7 +69,7 @@ export default {
   },
   created() {},
   mounted() {
-    this.queryTeacherClassDetailList(this.teacherid)
+    this.queryTeacherClassDetailList(this.openid)
   }
 };
 </script>

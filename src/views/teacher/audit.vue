@@ -15,7 +15,6 @@
               <input
                 disabled="disabled"
                 class="input"
-                placeholder="请输入学生姓名"
                 maxlength="10"
                 v-model="form.studentName"
               />
@@ -29,7 +28,6 @@
               <input
                 disabled="disabled"
                 class="input"
-                placeholder="请输入学生姓名"
                 maxlength="10"
                 v-model="form.sex"
               />
@@ -43,7 +41,6 @@
               <input
                 disabled="disabled"
                 class="input"
-                placeholder="请输入学生姓名"
                 maxlength="10"
                 v-model="form.birthday"
               />
@@ -99,47 +96,57 @@ export default {
       },
       classList: [],
       studentList: [],
-      deleteButton: false //控制删除按钮的出现
+      deleteButton: false, //控制删除按钮的出现
+      params: {
+        teacherid: this.$route.query.teacherid,
+        classid: this.$route.query.classid
+      }
     };
   },
   methods: {
     handleDel() {
-      let { studentId } = this.form;
-      if (studentId) {
+      let teacherid = this.$route.query.teacherid;
+      if (teacherid) {
         this.$dialog
           .confirm({
             title: "提示",
             message: "确定要移除学生吗？"
           })
           .then(() => {
-            this.studentDelete({
-              studentId,
-              openId: this.$store.state.user.info.openId,
-              classId: this.$route.query.classId,
-              tel: this.querys.tel
-            });
+            this.auditJoinInClassTeacherUnapproved(this.params);
           })
           .catch(() => {});
       }
     },
-    handleSubmit() {
-      let { studentName, classId, linkMan } = this.form;
-      if (studentName == "" || !studentName.length) {
-        this.$toast("请输入学生姓名");
-        return false;
-      }
-      if (!classId) {
-        this.$toast("请选择学生所在班级");
-        return false;
-      }
-      for (let i = 0; i < linkMan.length; i++) {
-        let tel = linkMan[i].tel;
-        if (!isPhone(tel)) {
-          this.$toast("请正确填写手机号");
-          return;
+    //拒绝
+    async auditJoinInClassTeacherUnapproved(params = {}) {
+      let res = await service.auditJoinInClassTeacherUnapproved(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$router.go(-1);
         }
       }
-      this.studentUpdate(this.form);
+    },
+    handleSubmit() {
+      this.auditJoinInClassTeacher(this.params);
+    },
+    //通过
+    async auditJoinInClassTeacher(params = {}) {
+      let res = await service.auditJoinInClassTeacher(params);
+      if (res.errorCode === 0) {
+        if (res.data.result === 1) {
+          this.$router.go(-1);
+        }
+      }
+    },
+    //学生信息查询
+    async getTeacherDetail(params = {}) {
+      let res = await service.getTeacherDetail(params);
+      if (res.errorCode === 0) {
+        this.form.studentName = res.data.name;
+        this.form.sex = res.data.gender;
+        this.form.birthday = res.data.phone;
+      }
     },
     //学生信息查询
     // async studentInfoQuery(params = {}) {
@@ -199,10 +206,11 @@ export default {
     }
   },
   mounted() {
-    this.queryTeacherClass(this.query);
-    // this.studentInfoQuery(this.querys);
-    // console.log(this.querys);
-    this.queryUpdateStudnetInfo({ studentId: this.querys.studentId });
+    // this.queryTeacherClass(this.query);
+    // // this.studentInfoQuery(this.querys);
+    // // console.log(this.querys);
+    // this.queryUpdateStudnetInfo({ studentId: this.querys.studentId });
+    this.getTeacherDetail(this.params);
   }
 };
 </script>
