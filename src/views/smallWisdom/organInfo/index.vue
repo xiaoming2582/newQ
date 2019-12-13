@@ -155,6 +155,11 @@ export default {
         margin-left: 5px;
       }
     }
+    .organTitle {
+      padding: 30px 0;
+      font-size: 30px;
+      font-weight: 600;
+    }
   }
 }
 

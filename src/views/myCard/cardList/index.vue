@@ -24,8 +24,9 @@
             <figure class="figure figure-skin-one">
               <div
                 class="cardContent flex"
-                :style="item.received?
-     {backgroundImage:'url('+geted+')'}:{backgroundImage:'url('+geting+')'}"
+                @click="toDetails(item.id)"
+                :style="item.status === 1?
+     {backgroundImage:'url('+geting+')'}:{backgroundImage:'url('+geted+')'}"
               >
                 <div class="cardType flex j-c-c a-i-c">
                   <p v-if="item.type=== 1">优惠券</p>
@@ -45,21 +46,23 @@
                       <p v-if="item.forever===0">时间：{{item.startTime}}至{{item.endTime}}</p>
                     </div>
                   </div>
-                  <p class="r-b">{{item.content}}</p>
+                  <!-- <p class="r-b">{{item.content}}</p> -->
+                  <p
+                    class="r-b"
+                  >涌现出很多教育教学方式。课程改革的核心理念之一就是在教程改革的核心理念之一就是在教学中渗透情感态度与涌现出很多教育教学方式。课程改革的核心理念之一就是在教学中渗</p>
+                  <p class="r-o-d flex">
+                    <span class="flex-1">机构：{{item.instTitle}}</span>
+                    <span class="flex-1">地址：{{item.instAddress}}</span>
+                  </p>
                 </div>
-                <div
-                  class="cardget flex j-c-c a-i-c"
-                  @click.stop="getCard(item.id)"
-                  v-if="item.received"
-                >
-                  <p>已领取</p>
+                <div class="cardget flex j-c-c a-i-c" v-if="item.status === -1">
+                  <p>已过期</p>
                 </div>
-                <div
-                  class="cardget flex j-c-c a-i-c"
-                  @click.stop="getCard(item.id)"
-                  v-if="!item.received"
-                >
-                  <p>领取</p>
+                <div class="cardget flex j-c-c a-i-c" v-if="item.status === 1">
+                  <p>详情</p>
+                </div>
+                <div class="cardget flex j-c-c a-i-c" v-if="item.status === 2">
+                  <p>已使用</p>
                 </div>
               </div>
             </figure>
@@ -77,8 +80,8 @@ export default {
     return {
       loading: false,
       finished: false,
-      list: [],
       status: 2,
+      list: [],
       query: {
         openId: this.$store.state.user.info.openId,
         type: 0,
@@ -93,9 +96,10 @@ export default {
   methods: {
     onLoad() {
       if (this.query.pageNum < this.query.totalPage) {
+        //     //加载数据
         this.query.pageNum += 1;
         service
-          .cardList(this.query, {
+          .myCardList(this.query, {
             headers: { "Content-Type": "application/json" }
           })
           .then(res => {
@@ -116,58 +120,8 @@ export default {
         this.finished = true;
       }
     },
-
-    getCard(id) {
-      this.getCoupon(id);
-    },
-
-    async getCoupon(id) {
-      let res = await service.getCoupon(
-        {
-          couponId: id,
-          openId: this.$store.state.user.info.openId
-        },
-        {
-          headers: { "Content-Type": "application/json" }
-        }
-      );
-
-      if (res.errorCode === 0) {
-        this.$dialog
-          .confirm({
-            title: "提示",
-            message: "卡券领取成功",
-            confirmButtonText: "确认",
-            confirmButtonColor: "#84CE09",
-            cancelButtonText: "我的卡券",
-            cancelButtonColor: "#C2C2C2"
-          })
-          .then(() => {
-            this.list.forEach(element => {
-              if (element.id === id) {
-                element.received = true;
-              }
-            });
-          })
-          .catch(() => {
-            this.$router.push({
-              path: "/myCard/cardList",
-              query: {
-                id
-              }
-            });
-          });
-      } else if (res.errorCode === 1) {
-        this.$toast(res.errorMsg);
-        this.list.forEach(element => {
-          if (element.id === id) {
-            element.received = true;
-          }
-        });
-      }
-    },
     async noticeQuery(params = {}) {
-      let res = await service.cardList(params, {
+      let res = await service.myCardList(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
@@ -180,10 +134,19 @@ export default {
           this.status = 0;
         }
       }
+    },
+    toDetails(id) {
+      this.$router.push({
+        path: "/myCard/cardDetails",
+        query: {
+          id
+        }
+      });
     }
   },
   mounted() {
     this.noticeQuery(this.query);
+    //this.setDocumentTitle();
   }
 };
 </script>
@@ -194,10 +157,10 @@ export default {
   background: #ededed;
 }
 .cardContent {
-  //   background: url("./../../../assets/geting_bg.png");
+  background: url("./../../../assets/geting_bg.png");
   width: 95%;
   margin: 0 auto;
-  height: 260px;
+  height: 320px;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center center;
@@ -227,7 +190,6 @@ export default {
     align-items: center;
     > div {
       &:nth-of-type(1) {
-        // width: 200px;
         span {
           color: #fff;
           &:nth-of-type(1) {
@@ -242,7 +204,7 @@ export default {
       }
       &:nth-of-type(2) {
         flex: 1;
-        margin-left: 10px;
+        margin-left: 20px;
         p {
           font-size: 26px;
           margin-bottom: 0 !important;
@@ -256,9 +218,20 @@ export default {
   }
 
   .r-b {
-    margin-top: 15px;
+    margin: 0;
     font-size: 20px;
     line-height: 30px;
+    height: 130px;
+  }
+  .r-o-d {
+    font-size: 20px;
+    border-top: 1px solid #fff;
+    padding: 10px 0;
+    span {
+      &:nth-of-type(1) {
+        margin-right: 5px;
+      }
+    }
   }
 }
 </style>

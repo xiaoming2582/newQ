@@ -2,11 +2,7 @@
   <div class="page">
     <div class="page-bd">
       <template v-if="visibility">
-        <div
-          class="overlay"
-          @click="visibility = false"
-          style="z-index: 110;"
-        ></div>
+        <div class="overlay" @click="visibility = false" style="z-index: 110;"></div>
         <div class="share-tip" style="z-index: 120;">
           <img src="@/assets/share-tip.png" />
           <p size-18>请点击右上角按钮邀请好友吧</p>
@@ -15,11 +11,7 @@
       <!-- 用户 -->
       <template v-if="roleType == 1 || roleType == 2 || roleType == 4">
         <div class="flex a-i-c home-user gradient-two" @click="handleRoleJump">
-          <div
-            class="switch-role"
-            v-if="roleList.length == 2"
-            @click.stop="jumpRoleSelect"
-          >
+          <div class="switch-role" v-if="roleList.length == 2" @click.stop="jumpRoleSelect">
             <van-icon name="replay" size="16px"></van-icon>
             <span>切换角色</span>
           </div>
@@ -54,7 +46,7 @@
             class="switch-role"
             v-if="roleList.length == 2"
             @click.stop="jumpRoleSelect"
-          > -->
+          >-->
           <div class="switch-role" @click.stop="jumpRoleSelect">
             <van-icon name="replay" size="16px"></van-icon>
             <span>切换角色</span>
@@ -62,28 +54,11 @@
           <div class="flex a-i-c">
             <div class="avatar flex a-i-c">
               <template v-if="name">
-                <img
-                  :src="photo"
-                  width="60"
-                  height="60"
-                  radius="50"
-                  v-if="photo"
-                />
-                <img
-                  src="@/assets/child-default@2x.png"
-                  width="60"
-                  height="60"
-                  radius="50"
-                  v-else
-                />
+                <img :src="photo" width="60" height="60" radius="50" v-if="photo" />
+                <img src="@/assets/child-default@2x.png" width="60" height="60" radius="50" v-else />
               </template>
               <template v-else>
-                <img
-                  src="@/assets/child-default@2x.png"
-                  width="60"
-                  height="60"
-                  radius="50"
-                />
+                <img src="@/assets/child-default@2x.png" width="60" height="60" radius="50" />
                 <p class="ml-20">尚未有关注孩子，点击添加。</p>
               </template>
             </div>
@@ -125,101 +100,53 @@
           </template>
         </van-cell>-->
 
-        <van-cell
-          class="a-i-c"
-          size="large"
-          title="我的作品"
-          is-link
-          to="/works"
-        >
+        <van-cell class="a-i-c" size="large" title="我的作品" is-link to="/works">
           <template slot="icon">
             <img src="../../assets/user-icon-5@2x.png" class="user-icon" />
           </template>
         </van-cell>
-        <van-cell
-          class="a-i-c"
-          size="large"
-          title="家长管理"
-          is-link
-          to="/patriarchManage"
-        >
+        <van-cell class="a-i-c" size="large" title="家长管理" is-link to="/patriarchManage">
           <template slot="icon">
             <img src="../../assets/manage.png" class="user-icon" />
           </template>
         </van-cell>
-        <van-cell
-          class="a-i-c"
-          size="large"
-          title="建立班级"
-          is-link
-          to="/teacher/createClass"
-        >
+        <van-cell class="a-i-c" size="large" title="建立班级" is-link to="/teacher/createClass">
           <template slot="icon">
             <img src="../../assets/establish.png" class="user-icon" />
           </template>
         </van-cell>
-        <van-cell
-          class="a-i-c"
-          size="large"
-          title="我的课表"
-          is-link
-          to="/schedule"
-        >
+        <van-cell class="a-i-c" size="large" title="我的课表" is-link to="/schedule">
           <template slot="icon">
             <img src="../../assets/user-icon-11@2x.png" class="user-icon" />
           </template>
         </van-cell>
-        <van-cell
-          class="a-i-c"
-          size="large"
-          title="我的手环"
-          is-link
-          @click="handleHand"
-        >
+        <van-cell class="a-i-c" size="large" title="我的手环" is-link @click="handleHand">
           <template slot="icon">
             <img src="../../assets/user-icon-7@2x.png" class="user-icon" />
           </template>
         </van-cell>
-        <van-cell
-          class="a-i-c"
-          size="large"
-          title="教育推荐"
-          is-link
-          to="/edu-recommend"
-        >
+        <van-cell class="a-i-c" size="large" title="教育推荐" is-link to="/edu-recommend">
           <template slot="icon">
             <img src="../../assets/user-icon-8@2x.png" class="user-icon" />
           </template>
         </van-cell>
-        <van-cell
-          class="a-i-c"
-          size="large"
-          title="阅读推荐"
-          is-link
-          to="/read-recommend"
-        >
+        <van-cell class="a-i-c" size="large" title="阅读推荐" is-link to="/read-recommend">
           <template slot="icon">
             <img src="../../assets/user-icon-9@2x.png" class="user-icon" />
           </template>
         </van-cell>
-        <van-cell
-          class="a-i-c"
-          size="large"
-          title="活动推荐"
-          is-link
-          to="/activity-recommend"
-        >
+        <van-cell class="a-i-c" size="large" title="活动推荐" is-link to="/activity-recommend">
           <template slot="icon">
             <img src="../../assets/user-icon-10@2x.png" class="user-icon" />
           </template>
         </van-cell>
-        <van-cell
-          class="a-i-c"
-          size="large"
-          title="帮助中心"
-          is-link
-          to="/help-center"
-        >
+        <van-cell class="a-i-c" size="large" title="帮助中心" is-link to="/help-center">
+          <template slot="icon">
+            <img src="../../assets/user-icon-2@2x.png" class="user-icon" />
+          </template>
+        </van-cell>
+
+        <van-cell class="a-i-c" size="large" title="我的卡券" is-link to="/myCard/cardList">
           <template slot="icon">
             <img src="../../assets/user-icon-2@2x.png" class="user-icon" />
           </template>
